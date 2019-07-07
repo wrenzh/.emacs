@@ -26,7 +26,7 @@
 (global-unset-key "\C-z")
 
 ;; Display settings
-(add-hook 'after-init-hook (lambda () (set-face-attribute 'default nil :family "Sometype Mono" :height 70)))
+(add-hook 'after-init-hook (lambda () (set-face-attribute 'default nil :family "Sometype Mono" :height 100)))
 (add-hook 'after-init-hook (lambda () (blink-cursor-mode 0)))
 (add-hook 'after-init-hook (lambda () (menu-bar-mode 0)))
 (add-hook 'after-init-hook (lambda () (tool-bar-mode 0)))
@@ -42,8 +42,8 @@
 
 (use-package monokai-theme
   :ensure t
-  :config
-  (load-theme 'monokai t))
+  :hook
+  (after-init . (lambda ()(load-theme 'monokai t))))
 
 (use-package ivy
   :ensure t
@@ -67,6 +67,11 @@
   :diminish company-mode
   :hook
   (after-init . (lambda () (global-company-mode t))))
+
+(use-package company-jedi
+  :ensure t
+  :config
+  (add-to-list 'company-backends 'company-jedi))
 
 (use-package flyspell
   :diminish flyspell-mode
@@ -97,7 +102,7 @@
   :config
   (evil-leader/set-leader "<SPC>")
   (evil-leader/set-key
-    "0" 'delete-this-window
+    "0" 'delete-window
     "1" 'delete-other-windows
     "b" 'switch-to-buffer
     "d" 'dired
