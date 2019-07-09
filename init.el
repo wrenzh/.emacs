@@ -26,7 +26,8 @@
 (global-unset-key "\C-z")
 
 ;; Display settings
-(add-hook 'after-init-hook (lambda () (set-face-attribute 'default nil :family "Sometype Mono" :height 100)))
+(add-hook 'after-init-hook
+	  (lambda () (set-face-attribute 'default nil :family "Sometype Mono" :height 100)))
 (add-hook 'after-init-hook (lambda () (blink-cursor-mode 0)))
 (add-hook 'after-init-hook (lambda () (menu-bar-mode 0)))
 (add-hook 'after-init-hook (lambda () (tool-bar-mode 0)))
@@ -40,6 +41,9 @@
 (when (window-system) (set-frame-size (selected-frame) 100 40))
 (setq dired-listing-switches "-alhG --group-directories-first")
 
+(use-package diminish
+  :ensure t)
+
 (use-package monokai-theme
   :ensure t
   :hook
@@ -51,6 +55,9 @@
   :config
   (setq ivy-use-virtual-buffers t)
   (setq enable-recursive-minibuffers t)
+  (setq ivy-re-builders-alist
+	'((swiper . ivy--regex-plus)
+	  (t . ivy--regex-fuzzy)))
   :hook
   (after-init . (lambda () (ivy-mode t)))
   :bind
@@ -116,7 +123,7 @@
     "t" 'neotree-toggle
     "w" 'save-buffer)
   (evil-leader/set-key-for-mode 'emacs-lisp-mode "x" 'eval-last-sexp)
-  (evil-leader/set-key-for-mode 'LaTeX-mode "w" 'TeX-command-run-all))
+  (evil-leader/set-key-for-mode 'latex-mode "w" 'TeX-command-run-all))
 
 (use-package evil
   :ensure t
@@ -151,16 +158,24 @@
 (use-package key-chord
   :ensure t
   :config
-  (key-chord-define-global "jk" (lambda () (interactive) (call-interactively (key-binding (kbd "<escape>")))))
+  (key-chord-define-global
+   "jk" (lambda () (interactive)
+	  (call-interactively (key-binding (kbd "<escape>")))))
+  (key-chord-define-global
+   "zz" (lambda () (interactive)
+	  (if (eq evil-state 'emacs) (evil-exit-emacs-state) (evil-emacs-state))))
   :hook
   (after-init . (lambda () (key-chord-mode t))))
 
 (use-package latex
   :ensure auctex
+  :diminish visual-line-mode
+  :diminish auto-fill-function
   :config
   (setq TeX-auto-save t)
   (setq TeX-parse-self t)
   (setq TeX-PDF-mode t)
+  (setq TeX-save-query nil)
   (setq TeX-source-correlate-mode t)
   (setq TeX-source-correlate-method 'synctex)
   (setq TeX-view-program-selection '((output-pdf "PDF Tools")))
@@ -171,7 +186,7 @@
   (LaTeX-mode . visual-line-mode)
   (LaTeX-mode . pdf-loader-install)
   (LaTeX-mode . LaTeX-math-mode)
-  (TeX-after-compilation-finished-functions . TeX-revert-document-buffer))
+  (TeX-after-compilation-finished-functions . (revert-buffer t)))
 
 (use-package magit
   :ensure t)
