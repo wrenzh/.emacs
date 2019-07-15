@@ -90,7 +90,6 @@
 
 (use-package flycheck
   :ensure t
-  :diminish flycheck-mode
   :config
   (setq-default flycheck-disabled-checkers '(emacs-lisp emacs-lisp-checkdoc))
   (setq flycheck-python-flake8-executable "python3")
@@ -120,9 +119,11 @@
     "j" 'next-buffer
     "k" 'previous-buffer
     "q" 'kill-this-buffer
+    "r" (lambda () (interactive) (revert-buffer nil t))
     "t" 'neotree-toggle
     "w" 'save-buffer)
   (evil-leader/set-key-for-mode 'emacs-lisp-mode "x" 'eval-last-sexp)
+  (evil-leader/set-key-for-mode 'python-mode "r" 'pyvenv-restart-python)
   (evil-leader/set-key-for-mode 'latex-mode "w" 'TeX-command-run-all))
 
 (use-package evil
@@ -188,13 +189,20 @@
   (LaTeX-mode . LaTeX-math-mode)
   (TeX-after-compilation-finished-functions . (revert-buffer t)))
 
+(use-package company-auctex
+  :ensure t
+  :hook
+  (after-init . company-auctex-init))
+
 (use-package magit
   :ensure t)
 
 (use-package evil-magit
   :ensure t)
 
-(use-package pyvenv
-  :ensure t)
+(use-package elpy
+  :ensure t
+  :hook
+  (after-init . elpy-enable))
 
 (server-start)
