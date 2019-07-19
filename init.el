@@ -40,6 +40,8 @@
 (when (eq system-type 'gnu/linux) (setq x-gtk-use-system-tooltips nil))
 (when (window-system) (set-frame-size (selected-frame) 100 40))
 (setq dired-listing-switches "-alhG --group-directories-first")
+(when (version< "26" emacs-version)
+  (add-hook 'prog-mode-hook 'display-line-numbers-mode))
 
 (use-package diminish
   :ensure t)
@@ -48,6 +50,11 @@
   :ensure t
   :hook
   (after-init . (lambda ()(load-theme 'monokai t))))
+
+(use-package doom-modeline
+  :ensure t
+  :hook
+  (after-init . doom-modeline-mode))
 
 (use-package ivy
   :ensure t
@@ -88,20 +95,11 @@
   :hook
   (text-mode . flyspell-mode))
 
-(use-package flycheck
-  :ensure t
-  :config
-  (setq-default flycheck-disabled-checkers '(emacs-lisp emacs-lisp-checkdoc))
-  (setq flycheck-python-flake8-executable "python3")
-  (setq flycheck-python-pycompile-executable "python3")
-  (setq flycheck-python-pylint-executable "python3")
-  :hook
-  (after-init . global-flycheck-mode))
-
 (use-package neotree
   :ensure t
   :config
-  (setq neo-smart-open t))
+  (setq neo-smart-open t)
+  (setq neo-theme 'icons))
 
 (use-package evil-leader
   :ensure t
@@ -114,7 +112,7 @@
     "d" 'dired
     "e" 'find-file
     "g" 'keyboard-escape-quit
-    "l" 'list-buffers
+    "l" 'ibuffer
     "o" 'other-window
     "j" 'next-buffer
     "k" 'previous-buffer
@@ -124,7 +122,8 @@
     "w" 'save-buffer)
   (evil-leader/set-key-for-mode 'emacs-lisp-mode "x" 'eval-last-sexp)
   (evil-leader/set-key-for-mode 'python-mode "r" 'pyvenv-restart-python)
-  (evil-leader/set-key-for-mode 'latex-mode "w" 'TeX-command-run-all))
+  (evil-leader/set-key-for-mode 'latex-mode "w" 'TeX-command-run-all)
+  (evil-leader/set-key-for-mode 'python-mode "x" 'elpy-shell-send-region-or-buffer))
 
 (use-package evil
   :ensure t
@@ -194,6 +193,9 @@
   :hook
   (after-init . company-auctex-init))
 
+(use-package ebib
+  :ensure t)
+
 (use-package magit
   :ensure t)
 
@@ -202,7 +204,18 @@
 
 (use-package elpy
   :ensure t
+  :config
+  (setq python-shell-interpreter "python")
+  (setq python-shell-interpreter-args "-i")
   :hook
   (after-init . elpy-enable))
+
+(use-package yasnippet
+  :ensure t
+  :config
+  (use-package yasnippet-snippets
+    :ensure t)
+  :hook
+  (after-init . yas-reload-all))
 
 (server-start)
