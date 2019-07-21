@@ -24,6 +24,8 @@
 (global-set-key [C-tab] 'other-window)
 (global-set-key [C-S-tab] (lambda () (interactive) (other-window -1)))
 (global-unset-key "\C-z")
+(add-hook 'dired-mode-hook 'auto-revert-mode)
+(add-hook 'pdf-view-mode-hook 'auto-revert-mode)
 
 ;; Display settings
 (add-hook 'after-init-hook
@@ -122,8 +124,7 @@
     "w" 'save-buffer)
   (evil-leader/set-key-for-mode 'emacs-lisp-mode "x" 'eval-last-sexp)
   (evil-leader/set-key-for-mode 'python-mode "r" 'pyvenv-restart-python)
-  (evil-leader/set-key-for-mode 'latex-mode "w" 'TeX-command-run-all)
-  (evil-leader/set-key-for-mode 'python-mode "x" 'elpy-shell-send-region-or-buffer))
+  (evil-leader/set-key-for-mode 'latex-mode "w" 'TeX-command-run-all))
 
 (use-package evil
   :ensure t
@@ -193,6 +194,18 @@
   :hook
   (after-init . company-auctex-init))
 
+(use-package company-lsp
+  :ensure t
+  :commands company-lsp
+  :config
+  (push 'company-lsp company-backends))
+
+(use-package lsp-mode
+  :ensure t
+  :commands lsp
+  :hook
+  (python-mode . lsp))
+
 (use-package ebib
   :ensure t)
 
@@ -202,14 +215,6 @@
 (use-package evil-magit
   :ensure t)
 
-(use-package elpy
-  :ensure t
-  :config
-  (setq python-shell-interpreter "python")
-  (setq python-shell-interpreter-args "-i")
-  :hook
-  (after-init . elpy-enable))
-
 (use-package yasnippet
   :ensure t
   :config
@@ -217,5 +222,8 @@
     :ensure t)
   :hook
   (after-init . yas-reload-all))
+
+(use-package pyvenv
+  :ensure t)
 
 (server-start)
