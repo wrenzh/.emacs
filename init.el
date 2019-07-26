@@ -124,7 +124,13 @@
     "w" 'save-buffer)
   (evil-leader/set-key-for-mode 'emacs-lisp-mode "x" 'eval-last-sexp)
   (evil-leader/set-key-for-mode 'python-mode "r" 'pyvenv-restart-python)
+  (evil-leader/set-key-for-mode 'python-mode "x" 'python-shell-send-buffer)
   (evil-leader/set-key-for-mode 'latex-mode "w" 'TeX-command-run-all))
+
+(use-package evil-surround
+  :ensure t
+  :config
+  (global-evil-surround-mode t))
 
 (use-package evil
   :ensure t
@@ -140,7 +146,8 @@
   (evil-define-key 'normal neotree-mode-map (kbd "n") 'neotree-next-line)
   (evil-define-key 'normal neotree-mode-map (kbd "p") 'neotree-previous-line)
   (evil-define-key 'normal neotree-mode-map (kbd "A") 'neotree-stretch-toggle)
-  (evil-define-key 'normal neotree-mode-map (kbd "H") 'neotree-hidden-file-toggle))
+  (evil-define-key 'normal neotree-mode-map (kbd "H") 'neotree-hidden-file-toggle)
+  (evil-define-key 'normal neotree-mode-map (kbd "o") 'neotree-enter))
 
 (use-package evil-mc
   :ensure t
@@ -194,6 +201,11 @@
   :hook
   (after-init . company-auctex-init))
 
+(use-package company-math
+  :ensure t
+  :config
+  (add-to-list 'company-backends 'company-math-symbols-unicode))
+
 (use-package company-lsp
   :ensure t
   :commands company-lsp
@@ -226,4 +238,7 @@
 (use-package pyvenv
   :ensure t)
 
-(server-start)
+(use-package matlab-mode
+  :ensure t
+  :hook
+  (matlab-mode . prog-mode-hook))
