@@ -239,6 +239,5 @@
   :ensure t)
 
 (use-package matlab-mode
-  :ensure t
-  :hook
-  (matlab-mode . prog-mode-hook))
+  :disabled t
+  :ensure t)
