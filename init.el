@@ -74,6 +74,7 @@
 
 (use-package counsel
   :ensure t
+  :after ivy
   :diminish counsel-mode
   :hook
   (after-init . counsel-mode))
@@ -83,6 +84,11 @@
   :diminish company-mode
   :hook
   (after-init . (lambda () (global-company-mode t))))
+
+(use-package company-quickhelp
+  :ensure t
+  :hook
+  (after-init . company-quickhelp-mode))
 
 (use-package company-jedi
   :ensure t
@@ -96,6 +102,11 @@
   (setq ispell-really-aspell t)
   :hook
   (text-mode . flyspell-mode))
+
+(use-package flyspell-correct-ivy
+  :bind ("C-;" . flyspell-correct-wrapper)
+  :init
+  (setq flyspell-correct-interface #'flyspell-correct-ivy))
 
 (use-package neotree
   :ensure t
@@ -193,8 +204,7 @@
   (LaTeX-mode . turn-on-auto-fill)
   (LaTeX-mode . visual-line-mode)
   (LaTeX-mode . pdf-loader-install)
-  (LaTeX-mode . LaTeX-math-mode)
-  (TeX-after-compilation-finished-functions . (revert-buffer t)))
+  (LaTeX-mode . LaTeX-math-mode))
 
 (use-package company-auctex
   :ensure t
