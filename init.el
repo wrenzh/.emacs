@@ -1,6 +1,6 @@
 ;; Improve emacs speed
 (setq inhibit-compacting-font-caches nil)
-(setq gc-cons-threshold 80000000)
+(setq gc-cons-threshold #x40000000)
 
 ;; Custom and package initialization
 (setq custom-file "~/.emacs.d/custom.el")
@@ -17,7 +17,6 @@
 (setq backup-directory-alist `(("." . "~/.emacs.d/backups")))
 (setq backup-by-copying t)
 (setq create-lockfiles nil)
-(add-hook 'after-init-hook (lambda () (recentf-mode t)))
 (add-hook 'after-init-hook (lambda () (electric-pair-mode t)))
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 (add-hook 'prog-mode-hook 'hl-line-mode)
@@ -45,8 +44,19 @@
 (when (version< "26" emacs-version)
   (add-hook 'prog-mode-hook 'display-line-numbers-mode))
 
+(use-package gcmh
+  :ensure t)
+
 (use-package diminish
   :ensure t)
+
+(use-package recentf
+  :ensure nil
+  :config
+  (recentf-mode t)
+  (setq recentf-max-menu-items 25)
+  (setq recentf-max-saved-items 25)
+  (run-at-time nil (* 5 60) 'recentf-save-list))
 
 (use-package monokai-theme
   :ensure t
@@ -65,7 +75,8 @@
   (setq ivy-use-virtual-buffers t)
   (setq enable-recursive-minibuffers t)
   (setq ivy-re-builders-alist
-	'((swiper . ivy--regex-plus)
+	'((ivy-bibtex . ivy--regex-ignore-order)
+	  (swiper . ivy--regex-plus)
 	  (t . ivy--regex-fuzzy)))
   :hook
   (after-init . (lambda () (ivy-mode t)))
@@ -106,7 +117,7 @@
 (use-package flyspell-correct-ivy
   :bind ("C-;" . flyspell-correct-wrapper)
   :init
-  (setq flyspell-correct-interface #'flyspell-correct-ivy))
+  (setq flyspell-correct-interface #'flyspell-correct-word-generic))
 
 (use-package neotree
   :ensure t
@@ -149,6 +160,8 @@
   :config
   (global-evil-leader-mode)
   (evil-mode t)
+  (define-key evil-normal-state-map (kbd "j") 'evil-next-visual-line)
+  (define-key evil-normal-state-map (kbd "k") 'evil-previous-visual-line)
   (evil-define-key 'normal neotree-mode-map (kbd "TAB") 'neotree-enter)
   (evil-define-key 'normal neotree-mode-map (kbd "SPC") 'neotree-quick-look)
   (evil-define-key 'normal neotree-mode-map (kbd "q") 'neotree-hide)
@@ -171,6 +184,9 @@
   :diminish undo-tree-mode
   :config
   (setq undo-tree-visualizer-diff t)
+  (setq undo-tree-auto-save-history t)
+  (setq undo-tree-history-directory-alist
+	'(("." . "~/.emacs.d/undo/")))
   :hook
   (after-init . global-undo-tree-mode))
 
@@ -200,6 +216,8 @@
   (setq TeX-view-program-selection '((output-pdf "PDF Tools")))
   (setq TeX-source-correlate-start-server t)
   (setq tex-directory "~/.tex")
+  (add-hook 'TeX-after-compilation-finished-functions
+	    #'TeX-revert-document-buffer)
   :hook
   (LaTeX-mode . turn-on-auto-fill)
   (LaTeX-mode . visual-line-mode)
@@ -251,3 +269,11 @@
 (use-package matlab-mode
   :disabled t
   :ensure t)
+
+(use-package ivy-bibtex
+  :ensure t
+  :config
+  (setq bibtex-completion-bibliography "~/drive/Documents/Bibliography/library.bib")
+  (setq ivy-bibtex-default-action 'ivy-bibtex-insert-citation))
+
+(server-start)
