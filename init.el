@@ -1,6 +1,6 @@
 ;; Improve emacs speed
 (setq inhibit-compacting-font-caches nil)
-(setq gc-cons-threshold #x40000000)
+(setq gc-cons-threshold #x1000000)
 
 ;; Custom and package initialization
 (setq custom-file "~/.emacs.d/custom.el")
@@ -44,9 +44,6 @@
 (when (version< "26" emacs-version)
   (add-hook 'prog-mode-hook 'display-line-numbers-mode))
 
-(use-package gcmh
-  :ensure t)
-
 (use-package diminish
   :ensure t)
 
@@ -65,6 +62,14 @@
 
 (use-package doom-modeline
   :ensure t
+  :config
+  (setq doom-modeline-buffer-file-name-style 'relative-from-project)
+  (setq doom-modeline-icon t)
+  (setq doom-modeline-major-mode-icon t)
+  (setq doom-modeline-major-mode-color-icon t)
+  (setq doom-modeline-buffer-state-icon t)
+  (setq doom-modeline-buffer-modification-icon t)
+  (setq doom-modeline-minor-modes (featurep 'minions))
   :hook
   (after-init . doom-modeline-mode))
 
