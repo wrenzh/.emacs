@@ -39,7 +39,6 @@
 (setq frame-title-format "%b")
 (setq ring-bell-function 'ignore)
 (when (eq system-type 'gnu/linux) (setq x-gtk-use-system-tooltips nil))
-(when (window-system) (set-frame-size (selected-frame) 100 40))
 (setq dired-listing-switches "-alhG --group-directories-first")
 (when (version< "26" emacs-version)
   (add-hook 'prog-mode-hook 'display-line-numbers-mode))
@@ -224,7 +223,6 @@
   (add-hook 'TeX-after-compilation-finished-functions
 	    #'TeX-revert-document-buffer)
   :hook
-  (LaTeX-mode . turn-on-auto-fill)
   (LaTeX-mode . visual-line-mode)
   (LaTeX-mode . pdf-loader-install)
   (LaTeX-mode . LaTeX-math-mode))
