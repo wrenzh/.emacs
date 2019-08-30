@@ -105,11 +105,6 @@
   :hook
   (after-init . company-quickhelp-mode))
 
-(use-package company-jedi
-  :ensure t
-  :config
-  (add-to-list 'company-backends 'company-jedi))
-
 (use-package flyspell
   :diminish flyspell-mode
   :config
@@ -151,7 +146,8 @@
   (evil-leader/set-key-for-mode 'emacs-lisp-mode "x" 'eval-last-sexp)
   (evil-leader/set-key-for-mode 'python-mode "r" 'pyvenv-restart-python)
   (evil-leader/set-key-for-mode 'python-mode "x" 'python-shell-send-buffer)
-  (evil-leader/set-key-for-mode 'latex-mode "w" 'TeX-command-run-all))
+  (evil-leader/set-key-for-mode 'latex-mode "w" 'TeX-command-run-all)
+  (evil-leader/set-key-for-mode 'latex-mode "i" 'ivy-bibtex))
 
 (use-package evil-surround
   :ensure t
@@ -227,11 +223,6 @@
   (LaTeX-mode . pdf-loader-install)
   (LaTeX-mode . LaTeX-math-mode))
 
-(use-package company-auctex
-  :ensure t
-  :hook
-  (after-init . company-auctex-init))
-
 (use-package company-math
   :ensure t
   :config
@@ -278,5 +269,3 @@
   :config
   (setq bibtex-completion-bibliography "~/drive/Documents/Bibliography/library.bib")
   (setq ivy-bibtex-default-action 'ivy-bibtex-insert-citation))
-
-(server-start)
