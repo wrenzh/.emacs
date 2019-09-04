@@ -94,6 +94,15 @@
   :hook
   (after-init . counsel-mode))
 
+(use-package ivy-posframe
+  :ensure t
+  :config
+  (setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-window-center)))
+  (setq ivy-posframe-parameters '((left-fringe . 8)
+				  (right-fringe . 8)))
+  :hook
+  (after-init . (lambda () (ivy-posframe-mode t))))
+
 (use-package company
   :ensure t
   :diminish company-mode
