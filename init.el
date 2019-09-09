@@ -97,9 +97,10 @@
 (use-package ivy-posframe
   :ensure t
   :config
-  (setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-window-center)))
-  (setq ivy-posframe-parameters '((left-fringe . 8)
-				  (right-fringe . 8)))
+  (setq ivy-posframe-display-functions-alist
+	'((t . ivy-posframe-display-at-window-center)))
+  (setq ivy-posframe-parameters
+	'((left-fringe . 8) (right-fringe . 8)))
   :hook
   (after-init . (lambda () (ivy-posframe-mode t))))
 
@@ -122,11 +123,6 @@
   :hook
   (text-mode . flyspell-mode))
 
-(use-package flyspell-correct-ivy
-  :bind ("C-;" . flyspell-correct-wrapper)
-  :init
-  (setq flyspell-correct-interface #'flyspell-correct-word-generic))
-
 (use-package neotree
   :ensure t
   :config
@@ -136,6 +132,7 @@
 (use-package evil-leader
   :ensure t
   :config
+  (global-evil-leader-mode)
   (evil-leader/set-leader "<SPC>")
   (evil-leader/set-key
     "0" 'delete-window
@@ -153,7 +150,6 @@
     "t" 'neotree-toggle
     "w" 'save-buffer)
   (evil-leader/set-key-for-mode 'emacs-lisp-mode "x" 'eval-last-sexp)
-  (evil-leader/set-key-for-mode 'python-mode "r" 'pyvenv-restart-python)
   (evil-leader/set-key-for-mode 'python-mode "x" 'python-shell-send-buffer)
   (evil-leader/set-key-for-mode 'latex-mode "w" 'TeX-command-run-all)
   (evil-leader/set-key-for-mode 'latex-mode "i" 'ivy-bibtex))
@@ -167,20 +163,21 @@
   :ensure t
   :defer t
   :config
-  (global-evil-leader-mode)
   (evil-mode t)
-  (define-key evil-normal-state-map (kbd "j") 'evil-next-visual-line)
-  (define-key evil-normal-state-map (kbd "k") 'evil-previous-visual-line)
-  (evil-define-key 'normal neotree-mode-map (kbd "TAB") 'neotree-enter)
-  (evil-define-key 'normal neotree-mode-map (kbd "SPC") 'neotree-quick-look)
-  (evil-define-key 'normal neotree-mode-map (kbd "q") 'neotree-hide)
-  (evil-define-key 'normal neotree-mode-map (kbd "RET") 'neotree-enter)
-  (evil-define-key 'normal neotree-mode-map (kbd "g") 'neotree-refresh)
-  (evil-define-key 'normal neotree-mode-map (kbd "n") 'neotree-next-line)
-  (evil-define-key 'normal neotree-mode-map (kbd "p") 'neotree-previous-line)
-  (evil-define-key 'normal neotree-mode-map (kbd "A") 'neotree-stretch-toggle)
-  (evil-define-key 'normal neotree-mode-map (kbd "H") 'neotree-hidden-file-toggle)
-  (evil-define-key 'normal neotree-mode-map (kbd "o") 'neotree-enter))
+  (evil-define-key 'normal 'global
+    (kbd "j") 'evil-next-visual-line
+    (kbd "k") 'evil-previous-visual-line)
+  (evil-define-key 'normal neotree-mode-map
+    (kbd "TAB") 'neotree-enter
+    (kbd "SPC") 'neotree-quick-look
+    (kbd "q") 'neotree-hide
+    (kbd "RET") 'neotree-enter
+    (kbd "g") 'neotree-refresh
+    (kbd "n") 'neotree-next-line
+    (kbd "p") 'neotree-previous-line
+    (kbd "A") 'neotree-stretch-toggle
+    (kbd "H") 'neotree-hidden-file-toggle
+    (kbd "o") 'neotree-enter))
 
 (use-package evil-mc
   :ensure t
@@ -235,7 +232,8 @@
 (use-package company-math
   :ensure t
   :config
-  (add-to-list 'company-backends 'company-math-symbols-unicode))
+  (add-to-list 'company-backends
+	       'company-math-symbols-unicode))
 
 (use-package company-lsp
   :ensure t
@@ -266,15 +264,10 @@
   :hook
   (after-init . yas-reload-all))
 
-(use-package pyvenv
-  :ensure t)
-
-(use-package matlab-mode
-  :disabled t
-  :ensure t)
-
 (use-package ivy-bibtex
   :ensure t
   :config
-  (setq bibtex-completion-bibliography "~/drive/Documents/Bibliography/library.bib")
-  (setq ivy-bibtex-default-action 'ivy-bibtex-insert-citation))
+  (setq bibtex-completion-bibliography
+	"~/drive/Documents/Bibliography/library.bib")
+  (setq ivy-bibtex-default-action
+	'ivy-bibtex-insert-citation))

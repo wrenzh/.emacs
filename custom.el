@@ -9,7 +9,7 @@
  '(lsp-pyls-plugins-pylint-enabled nil)
  '(package-selected-packages
    (quote
-    (ivy-posframe ivy-bibtex flyspell-correct-ivy company-quickhelp ivy-postframe matlab evil-surround company-math company-lsp lsp-mode doom-modeline ebib all-the-icons yasnippet-snippets yasnippet leetcode diminish pyvenv evil-mc evil-magit magit counsel ivy evil-leader evil neotree all-the-icons-dired key-chord pdf-tools monokai-theme auctex company use-package))))
+    (ivy-posframe ivy-bibtex flyspell-correct-ivy company-quickhelp ivy-postframe matlab evil-surround company-math company-lsp lsp-mode doom-modeline ebib all-the-icons yasnippet-snippets yasnippet leetcode diminish evil-mc evil-magit magit counsel ivy evil-leader evil neotree all-the-icons-dired key-chord pdf-tools monokai-theme auctex company use-package))))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
