@@ -59,18 +59,10 @@
   :hook
   (after-init . (lambda ()(load-theme 'monokai t))))
 
-(use-package doom-modeline
+(use-package mood-line
   :ensure t
-  :config
-  (setq doom-modeline-buffer-file-name-style 'relative-from-project)
-  (setq doom-modeline-icon t)
-  (setq doom-modeline-major-mode-icon t)
-  (setq doom-modeline-major-mode-color-icon t)
-  (setq doom-modeline-buffer-state-icon t)
-  (setq doom-modeline-buffer-modification-icon t)
-  (setq doom-modeline-minor-modes (featurep 'minions))
   :hook
-  (after-init . doom-modeline-mode))
+  (after-init . mood-line-mode))
 
 (use-package ivy
   :ensure t
