@@ -90,7 +90,7 @@
   :ensure t
   :config
   (setq ivy-posframe-display-functions-alist
-	'((t . ivy-posframe-display-at-window-center)))
+	'((t . ivy-posframe-display-at-frame-center)))
   (setq ivy-posframe-parameters
 	'((left-fringe . 8) (right-fringe . 8)))
   :hook
@@ -232,6 +232,11 @@
   :commands company-lsp
   :config
   (push 'company-lsp company-backends))
+
+(use-package poetry
+  :ensure t
+  :hook
+  (python-mode . poetry-tracking-mode))
 
 (use-package lsp-mode
   :ensure t
