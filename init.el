@@ -93,6 +93,10 @@
 	'((t . ivy-posframe-display-at-frame-center)))
   (setq ivy-posframe-parameters
 	'((left-fringe . 8) (right-fringe . 8)))
+  (setq ivy-posframe-height 10)
+  (setq ivy-posframe-width 60)
+  (setq ivy-posframe-min-height 10)
+  (setq ivy-posframe-min-width 60)
   :hook
   (after-init . (lambda () (ivy-posframe-mode t))))
 
