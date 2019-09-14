@@ -5,6 +5,7 @@
 ;; Custom and package initialization
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file 'noerror)
+(when (version< emacs-version "26.3") (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3"))
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 (package-initialize)
@@ -42,6 +43,9 @@
 (setq dired-listing-switches "-alhG --group-directories-first")
 (when (version< "26" emacs-version)
   (add-hook 'prog-mode-hook 'display-line-numbers-mode))
+
+(use-package all-the-icons
+  :ensure t)
 
 (use-package diminish
   :ensure t)
@@ -203,6 +207,9 @@
 	  (if (eq evil-state 'emacs) (evil-exit-emacs-state) (evil-emacs-state))))
   :hook
   (after-init . (lambda () (key-chord-mode t))))
+
+(use-package pdf-tools
+  :ensure t)
 
 (use-package latex
   :ensure auctex
