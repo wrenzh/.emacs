@@ -5,7 +5,8 @@
 ;; Custom and package initialization
 (setq custom-file "~/.emacs.d/custom.el")
 (load custom-file 'noerror)
-(when (version< emacs-version "26.3") (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3"))
+(when (version< emacs-version "26.3")
+  (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3"))
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 (package-initialize)
@@ -29,7 +30,8 @@
 
 ;; Display settings
 (add-hook 'after-init-hook
-	  (lambda () (set-face-attribute 'default nil :family "Sometype Mono" :height 100)))
+	  (lambda () (set-face-attribute
+		      'default nil :family "Sometype Mono" :height 100)))
 (add-hook 'after-init-hook (lambda () (blink-cursor-mode 0)))
 (add-hook 'after-init-hook (lambda () (menu-bar-mode 0)))
 (add-hook 'after-init-hook (lambda () (tool-bar-mode 0)))
@@ -39,8 +41,9 @@
 (setq inhibit-startup-screen t)
 (setq frame-title-format "%b")
 (setq ring-bell-function 'ignore)
-(when (eq system-type 'gnu/linux) (setq x-gtk-use-system-tooltips nil))
-(setq dired-listing-switches "-alhG --group-directories-first")
+(when (eq system-type 'gnu/linux)
+  (setq x-gtk-use-system-tooltips nil
+	dired-listing-switches "-alhG --group-directories-first"))
 (when (version< "26" emacs-version)
   (add-hook 'prog-mode-hook 'display-line-numbers-mode))
 
@@ -56,12 +59,14 @@
   (recentf-mode t)
   (setq recentf-max-menu-items 25)
   (setq recentf-max-saved-items 25)
-  (run-at-time nil (* 5 60) 'recentf-save-list))
+  (run-at-time nil (* 5 60)
+	       '(lambda () (let ((inhibit-message t))
+			     (recentf-save-list)))))
 
 (use-package monokai-theme
   :ensure t
   :hook
-  (after-init . (lambda ()(load-theme 'monokai t))))
+  (after-init . (lambda () (load-theme 'monokai t))))
 
 (use-package mood-line
   :ensure t
@@ -70,7 +75,6 @@
 
 (use-package ivy
   :ensure t
-  :diminish ivy-mode
   :config
   (setq ivy-use-virtual-buffers t)
   (setq enable-recursive-minibuffers t)
@@ -97,10 +101,6 @@
 	'((t . ivy-posframe-display-at-frame-center)))
   (setq ivy-posframe-parameters
 	'((left-fringe . 8) (right-fringe . 8)))
-  (setq ivy-posframe-height 10)
-  (setq ivy-posframe-width 60)
-  (setq ivy-posframe-min-height 10)
-  (setq ivy-posframe-min-width 60)
   :hook
   (after-init . (lambda () (ivy-posframe-mode t))))
 
@@ -116,7 +116,6 @@
   (after-init . company-quickhelp-mode))
 
 (use-package flyspell
-  :diminish flyspell-mode
   :config
   (setq ispell-program-name "aspell")
   (setq ispell-really-aspell t)
@@ -276,6 +275,6 @@
   :ensure t
   :config
   (setq bibtex-completion-bibliography
-	"~/drive/Documents/Bibliography/library.bib")
+	"~/Drive/Documents/Bibliography/library.bib")
   (setq ivy-bibtex-default-action
 	'ivy-bibtex-insert-citation))
