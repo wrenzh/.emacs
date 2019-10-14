@@ -228,6 +228,7 @@
 	    #'TeX-revert-document-buffer)
   :hook
   (LaTeX-mode . visual-line-mode)
+  (LaTeX-mode . refill-mode)
   (LaTeX-mode . pdf-loader-install)
   (LaTeX-mode . LaTeX-math-mode))
 
