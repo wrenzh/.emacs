@@ -228,7 +228,6 @@
 	    #'TeX-revert-document-buffer)
   :hook
   (LaTeX-mode . visual-line-mode)
-  (LaTeX-mode . refill-mode)
   (LaTeX-mode . pdf-loader-install)
   (LaTeX-mode . LaTeX-math-mode))
 
@@ -263,14 +262,6 @@
 
 (use-package evil-magit
   :ensure t)
-
-(use-package yasnippet
-  :ensure t
-  :config
-  (use-package yasnippet-snippets
-    :ensure t)
-  :hook
-  (after-init . yas-reload-all))
 
 (use-package ivy-bibtex
   :ensure t
