@@ -46,6 +46,7 @@
 	dired-listing-switches "-alhG --group-directories-first"))
 (when (version< "26" emacs-version)
   (add-hook 'prog-mode-hook 'display-line-numbers-mode))
+(setq display-line-numbers-type 'relative)
 
 (use-package all-the-icons
   :ensure t)
@@ -60,8 +61,9 @@
   (setq recentf-max-menu-items 25)
   (setq recentf-max-saved-items 25)
   (run-at-time nil (* 5 60)
-	       '(lambda () (let ((inhibit-message t))
-			     (recentf-save-list)))))
+	       '(lambda ()
+		  (let ((inhibit-message t))
+		    (recentf-save-list)))))
 
 (use-package monokai-theme
   :ensure t
@@ -141,6 +143,7 @@
     "e" 'find-file
     "g" 'keyboard-escape-quit
     "l" 'ibuffer
+    "m" 'magit-status
     "o" 'other-window
     "j" 'next-buffer
     "k" 'previous-buffer
@@ -206,7 +209,8 @@
 	  (call-interactively (key-binding (kbd "<escape>")))))
   (key-chord-define-global
    "zz" (lambda () (interactive)
-	  (if (eq evil-state 'emacs) (evil-exit-emacs-state) (evil-emacs-state))))
+	  (if (eq evil-state 'emacs) (evil-exit-emacs-state)
+	    (evil-emacs-state))))
   :hook
   (after-init . (lambda () (key-chord-mode t))))
 
@@ -215,8 +219,6 @@
 
 (use-package latex
   :ensure auctex
-  :diminish visual-line-mode
-  :diminish auto-fill-function
   :config
   (setq TeX-auto-save t)
   (setq TeX-parse-self t)
