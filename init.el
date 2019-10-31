@@ -166,6 +166,9 @@
   (evil-define-key 'normal 'global
     (kbd "j") 'evil-next-visual-line
     (kbd "k") 'evil-previous-visual-line)
+  (evil-define-key 'visual 'global
+    (kbd "j") 'evil-next-visual-line
+    (kbd "k") 'evil-previous-visual-line)
   (evil-define-key 'normal neotree-mode-map
     (kbd "TAB") 'neotree-enter
     (kbd "SPC") 'neotree-quick-look
@@ -230,6 +233,13 @@
   (LaTeX-mode . visual-line-mode)
   (LaTeX-mode . pdf-loader-install)
   (LaTeX-mode . LaTeX-math-mode))
+
+(use-package visual-fill-column
+  :ensure t
+  :config
+  (setq visual-fill-column-width 80)
+  :hook
+  (visual-line-mode . visual-fill-column-mode))
 
 (use-package company-math
   :ensure t
