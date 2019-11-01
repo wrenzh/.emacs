@@ -60,10 +60,9 @@
   (recentf-mode t)
   (setq recentf-max-menu-items 25)
   (setq recentf-max-saved-items 25)
-  (run-at-time nil (* 5 60)
-	       '(lambda ()
-		  (let ((inhibit-message t))
-		    (recentf-save-list)))))
+  (run-at-time nil (* 5 60) '(lambda ()
+			       (let ((inhibit-message t))
+				 (recentf-save-list)))))
 
 (use-package monokai-theme
   :ensure t
@@ -92,7 +91,6 @@
 (use-package counsel
   :ensure t
   :after ivy
-  :diminish counsel-mode
   :hook
   (after-init . counsel-mode))
 
@@ -101,14 +99,12 @@
   :config
   (setq ivy-posframe-display-functions-alist
 	'((t . ivy-posframe-display-at-frame-center)))
-  (setq ivy-posframe-parameters
-	'((left-fringe . 8) (right-fringe . 8)))
+  (setq ivy-posframe-parameters '((left-fringe . 8) (right-fringe . 8)))
   :hook
   (after-init . (lambda () (ivy-posframe-mode t))))
 
 (use-package company
   :ensure t
-  :diminish company-mode
   :hook
   (after-init . (lambda () (global-company-mode t))))
 
@@ -186,13 +182,11 @@
 
 (use-package evil-mc
   :ensure t
-  :diminish evil-mc-mode
   :hook
   (after-init . global-evil-mc-mode))
 
 (use-package undo-tree
   :ensure t
-  :diminish undo-tree-mode
   :config
   (setq undo-tree-visualizer-diff t)
   (setq undo-tree-auto-save-history t)
@@ -280,5 +274,4 @@
   :config
   (setq bibtex-completion-bibliography
 	"~/Drive/Documents/Bibliography/library.bib")
-  (setq ivy-bibtex-default-action
-	'ivy-bibtex-insert-citation))
+  (setq ivy-bibtex-default-action 'ivy-bibtex-insert-citation))
