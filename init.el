@@ -160,6 +160,9 @@
 (use-package evil
   :ensure t
   :defer t
+  :init
+  (setq evil-want-integration t)
+  (setq evil-want-keybinding nil)
   :config
   (evil-mode t)
   (evil-define-key 'normal 'global
@@ -178,9 +181,7 @@
     (kbd "p") 'neotree-previous-line
     (kbd "A") 'neotree-stretch-toggle
     (kbd "H") 'neotree-hidden-file-toggle
-    (kbd "o") 'neotree-enter)
-  (setq evil-want-integration t)
-  (setq evil-want-keybinding nil))
+    (kbd "o") 'neotree-enter))
 
 (use-package evil-mc
   :ensure t
