@@ -178,12 +178,20 @@
     (kbd "p") 'neotree-previous-line
     (kbd "A") 'neotree-stretch-toggle
     (kbd "H") 'neotree-hidden-file-toggle
-    (kbd "o") 'neotree-enter))
+    (kbd "o") 'neotree-enter)
+  (setq evil-want-integration t)
+  (setq evil-want-keybinding nil))
 
 (use-package evil-mc
   :ensure t
   :hook
   (after-init . global-evil-mc-mode))
+
+(use-package evil-collection
+  :after evil
+  :ensure t
+  :config
+  (evil-collection-init))
 
 (use-package undo-tree
   :ensure t
@@ -249,16 +257,16 @@
   :config
   (push 'company-lsp company-backends))
 
-(use-package poetry
-  :ensure t
-  :hook
-  (python-mode . poetry-tracking-mode))
-
 (use-package lsp-mode
   :ensure t
   :commands lsp
   :hook
   (python-mode . lsp))
+
+(use-package poetry
+  :ensure t
+  :hook
+  (python-mode . poetry-tracking-mode))
 
 (use-package ebib
   :ensure t)
