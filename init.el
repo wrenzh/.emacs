@@ -126,10 +126,24 @@
   (setq neo-smart-open t)
   (setq neo-theme 'icons))
 
+(use-package evil
+  :ensure t
+  :init
+  (setq evil-want-integration t)
+  (setq evil-want-keybinding nil)
+  :config
+  (evil-define-key 'normal 'global
+    (kbd "j") 'evil-next-visual-line
+    (kbd "k") 'evil-previous-visual-line)
+  (evil-define-key 'visual 'global
+    (kbd "j") 'evil-next-visual-line
+    (kbd "k") 'evil-previous-visual-line))
+
 (use-package evil-leader
   :ensure t
   :config
   (global-evil-leader-mode)
+  (evil-mode t)
   (evil-leader/set-leader "<SPC>")
   (evil-leader/set-key
     "0" 'delete-window
@@ -152,47 +166,21 @@
   (evil-leader/set-key-for-mode 'latex-mode "w" 'TeX-command-run-all)
   (evil-leader/set-key-for-mode 'latex-mode "i" 'ivy-bibtex))
 
-(use-package evil-surround
-  :ensure t
-  :config
-  (global-evil-surround-mode t))
-
-(use-package evil
-  :ensure t
-  :defer t
-  :init
-  (setq evil-want-integration t)
-  (setq evil-want-keybinding nil)
-  :config
-  (evil-mode t)
-  (evil-define-key 'normal 'global
-    (kbd "j") 'evil-next-visual-line
-    (kbd "k") 'evil-previous-visual-line)
-  (evil-define-key 'visual 'global
-    (kbd "j") 'evil-next-visual-line
-    (kbd "k") 'evil-previous-visual-line)
-  (evil-define-key 'normal neotree-mode-map
-    (kbd "TAB") 'neotree-enter
-    (kbd "SPC") 'neotree-quick-look
-    (kbd "q") 'neotree-hide
-    (kbd "RET") 'neotree-enter
-    (kbd "g") 'neotree-refresh
-    (kbd "n") 'neotree-next-line
-    (kbd "p") 'neotree-previous-line
-    (kbd "A") 'neotree-stretch-toggle
-    (kbd "H") 'neotree-hidden-file-toggle
-    (kbd "o") 'neotree-enter))
-
-(use-package evil-mc
-  :ensure t
-  :hook
-  (after-init . global-evil-mc-mode))
-
 (use-package evil-collection
   :after evil
   :ensure t
   :config
   (evil-collection-init))
+
+(use-package evil-surround
+  :ensure t
+  :config
+  (global-evil-surround-mode t))
+
+(use-package evil-mc
+  :ensure t
+  :hook
+  (after-init . global-evil-mc-mode))
 
 (use-package undo-tree
   :ensure t
