@@ -71,6 +71,7 @@
 
 (use-package mood-line
   :ensure t
+  :config
   :hook
   (after-init . mood-line-mode))
 
@@ -248,9 +249,7 @@
 
 (use-package lsp-mode
   :ensure t
-  :commands lsp
-  :hook
-  (python-mode . lsp))
+  :commands lsp)
 
 (use-package poetry
   :ensure t
@@ -264,6 +263,12 @@
   :ensure t)
 
 (use-package evil-magit
+  :ensure t)
+
+(use-package yasnippet
+  :ensure t)
+
+(use-package yasnippet-snippets
   :ensure t)
 
 (use-package ivy-bibtex
