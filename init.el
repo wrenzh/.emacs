@@ -267,7 +267,9 @@
   :ensure t)
 
 (use-package yasnippet
-  :ensure t)
+  :ensure t
+  :hook
+  (after-init . (lambda () (yas-global-mode t))))
 
 (use-package yasnippet-snippets
   :ensure t)
