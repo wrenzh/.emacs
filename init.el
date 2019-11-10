@@ -232,6 +232,7 @@
   :ensure t
   :config
   (setq visual-fill-column-width 80)
+  (setq visual-fill-column-center-text t)
   :hook
   (visual-line-mode . visual-fill-column-mode))
 
