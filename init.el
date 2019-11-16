@@ -188,8 +188,7 @@
   :config
   (setq undo-tree-visualizer-diff t)
   (setq undo-tree-auto-save-history t)
-  (setq undo-tree-history-directory-alist
-	'(("." . "~/.emacs.d/undo/")))
+  (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo/")))
   :hook
   (after-init . global-undo-tree-mode))
 
@@ -234,7 +233,8 @@
   (setq visual-fill-column-width 80)
   (setq visual-fill-column-center-text t)
   :hook
-  (visual-line-mode . visual-fill-column-mode))
+  (visual-line-mode . visual-fill-column-mode)
+  (visual-fill-column-mode . (lambda () (setq visual-fill-column-center-text t))))
 
 (use-package company-math
   :ensure t
