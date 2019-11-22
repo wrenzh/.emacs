@@ -187,8 +187,6 @@
   :ensure t
   :config
   (setq undo-tree-visualizer-diff t)
-  (setq undo-tree-auto-save-history t)
-  (setq undo-tree-history-directory-alist '(("." . "~/.emacs.d/undo/")))
   :hook
   (after-init . global-undo-tree-mode))
 
