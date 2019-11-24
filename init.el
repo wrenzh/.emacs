@@ -57,12 +57,17 @@
 (use-package recentf
   :ensure nil
   :config
-  (recentf-mode t)
-  (setq recentf-max-menu-items 25)
   (setq recentf-max-saved-items 25)
   (run-at-time nil (* 5 60) '(lambda ()
 			       (let ((inhibit-message t))
-				 (recentf-save-list)))))
+				 (recentf-save-list))))
+  (add-to-list 'recentf-exclude (format "%s/\\.emacs\\.d/elpa/.*" (getenv "HOME")))
+  :hook
+  (after-init . (lambda ()
+		  (progn
+		    (setq recentf-auto-cleanup 'never)
+		    (recentf-mode t)
+		    (setq recentf-auto-cleanup 60)))))
 
 (use-package monokai-theme
   :ensure t
