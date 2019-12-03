@@ -24,7 +24,6 @@
 (add-hook 'prog-mode-hook 'hl-line-mode)
 (global-set-key [C-tab] 'other-window)
 (global-set-key [C-S-tab] (lambda () (interactive) (other-window -1)))
-(global-unset-key "\C-z")
 (add-hook 'dired-mode-hook 'auto-revert-mode)
 (add-hook 'pdf-view-mode-hook 'auto-revert-mode)
 
@@ -69,10 +68,11 @@
 		    (recentf-mode t)
 		    (setq recentf-auto-cleanup 60)))))
 
-(use-package monokai-theme
+(use-package gruvbox-theme
   :ensure t
   :hook
-  (after-init . (lambda () (load-theme 'monokai t))))
+  (after-init . (lambda () (load-theme 'gruvbox-dark-medium t))))
+
 
 (use-package mood-line
   :ensure t
