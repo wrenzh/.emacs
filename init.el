@@ -119,6 +119,9 @@
   :hook
   (after-init . company-quickhelp-mode))
 
+(use-package vterm
+  :ensure t)
+
 (use-package flyspell
   :config
   (setq ispell-program-name "aspell")
@@ -166,7 +169,8 @@
     "q" 'kill-this-buffer
     "r" (lambda () (interactive) (revert-buffer nil t))
     "t" 'neotree-toggle
-    "w" 'save-buffer)
+    "w" 'save-buffer
+    "v" 'vterm-other-window)
   (evil-leader/set-key-for-mode 'emacs-lisp-mode "x" 'eval-last-sexp)
   (evil-leader/set-key-for-mode 'python-mode "x" 'python-shell-send-buffer)
   (evil-leader/set-key-for-mode 'latex-mode "w" 'TeX-command-run-all)
@@ -255,10 +259,16 @@
   :ensure t
   :commands lsp)
 
+(use-package ccls
+  :ensure t
+  :hook ((c-mode c++-mode objc-mode cuda-mode) .
+         (lambda () (lsp))))
+
 (use-package poetry
   :ensure t
   :hook
   (python-mode . poetry-tracking-mode))
+
 
 (use-package ebib
   :ensure t)
