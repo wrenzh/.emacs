@@ -170,7 +170,7 @@
     "r" (lambda () (interactive) (revert-buffer nil t))
     "t" 'neotree-toggle
     "w" 'save-buffer
-    "v" 'vterm-other-window)
+    "v" 'vterm)
   (evil-leader/set-key-for-mode 'emacs-lisp-mode "x" 'eval-last-sexp)
   (evil-leader/set-key-for-mode 'python-mode "x" 'python-shell-send-buffer)
   (evil-leader/set-key-for-mode 'latex-mode "w" 'TeX-command-run-all)
