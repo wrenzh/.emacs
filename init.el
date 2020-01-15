@@ -1,6 +1,7 @@
 ;; Improve emacs speed
 (setq inhibit-compacting-font-caches nil)
 (setq gc-cons-threshold #x1000000)
+(run-with-idle-timer 2 t (lambda () (garbage-collect)))
 
 ;; Custom and package initialization
 (setq custom-file "~/.emacs.d/custom.el")
@@ -22,15 +23,13 @@
 (add-hook 'after-init-hook (lambda () (electric-pair-mode t)))
 (add-hook 'before-save-hook 'delete-trailing-whitespace)
 (add-hook 'prog-mode-hook 'hl-line-mode)
-(global-set-key [C-tab] 'other-window)
-(global-set-key [C-S-tab] (lambda () (interactive) (other-window -1)))
 (add-hook 'dired-mode-hook 'auto-revert-mode)
 (add-hook 'pdf-view-mode-hook 'auto-revert-mode)
 
 ;; Display settings
-(add-hook 'after-init-hook
-	  (lambda () (set-face-attribute
-		      'default nil :family "Sometype Mono" :height 100)))
+(set-face-attribute 'default nil
+		    :family "Sometype Mono"
+		    :height (if (eq system-type 'darwin) 120 100))
 (add-hook 'after-init-hook (lambda () (blink-cursor-mode 0)))
 (add-hook 'after-init-hook (lambda () (menu-bar-mode 0)))
 (add-hook 'after-init-hook (lambda () (tool-bar-mode 0)))
@@ -44,11 +43,8 @@
   (setq x-gtk-use-system-tooltips nil
 	dired-listing-switches "-alhG --group-directories-first"))
 (when (version< "26" emacs-version)
-  (add-hook 'prog-mode-hook 'display-line-numbers-mode))
-(setq display-line-numbers-type 'relative)
-
-(use-package all-the-icons
-  :ensure t)
+  (add-hook 'prog-mode-hook 'display-line-numbers-mode)
+  (setq display-line-numbers-type 'relative))
 
 (use-package diminish
   :ensure t)
@@ -57,16 +53,14 @@
   :ensure nil
   :config
   (setq recentf-max-saved-items 25)
-  (run-at-time nil (* 5 60) '(lambda ()
-			       (let ((inhibit-message t))
-				 (recentf-save-list))))
+  (run-at-time nil (* 5 60)
+	       '(lambda () (let ((inhibit-message t)) (recentf-save-list))))
   (add-to-list 'recentf-exclude (format "%s/\\.emacs\\.d/elpa/.*" (getenv "HOME")))
   :hook
-  (after-init . (lambda ()
-		  (progn
-		    (setq recentf-auto-cleanup 'never)
-		    (recentf-mode t)
-		    (setq recentf-auto-cleanup 60)))))
+  (after-init . (lambda () (progn
+			     (setq recentf-auto-cleanup 'never)
+			     (recentf-mode t)
+			     (setq recentf-auto-cleanup 60)))))
 
 (use-package gruvbox-theme
   :ensure t
@@ -129,12 +123,6 @@
   :hook
   (text-mode . flyspell-mode))
 
-(use-package neotree
-  :ensure t
-  :config
-  (setq neo-smart-open t)
-  (setq neo-theme 'icons))
-
 (use-package evil
   :ensure t
   :init
@@ -168,7 +156,6 @@
     "k" 'previous-buffer
     "q" 'kill-this-buffer
     "r" (lambda () (interactive) (revert-buffer nil t))
-    "t" 'neotree-toggle
     "w" 'save-buffer
     "v" 'vterm)
   (evil-leader/set-key-for-mode 'emacs-lisp-mode "x" 'eval-last-sexp)
@@ -243,12 +230,6 @@
   (visual-line-mode . visual-fill-column-mode)
   (visual-fill-column-mode . (lambda () (setq visual-fill-column-center-text t))))
 
-(use-package company-math
-  :ensure t
-  :config
-  (add-to-list 'company-backends
-	       'company-math-symbols-unicode))
-
 (use-package company-lsp
   :ensure t
   :commands company-lsp
@@ -261,14 +242,12 @@
 
 (use-package ccls
   :ensure t
-  :hook ((c-mode c++-mode objc-mode cuda-mode) .
-         (lambda () (lsp))))
+  :hook ((c-mode c++-mode objc-mode cuda-mode) . (lambda () (lsp))))
 
 (use-package poetry
   :ensure t
   :hook
   (python-mode . poetry-tracking-mode))
-
 
 (use-package ebib
   :ensure t)
