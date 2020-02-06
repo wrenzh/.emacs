@@ -114,9 +114,9 @@
 		  (recentf-mode t)
 		  (setq recentf-auto-cleanup 60))))
 
-(use-package gruvbox-theme
+(use-package doom-themes
   :config
-  (load-theme 'gruvbox-dark-medium t))
+  (load-theme 'doom-gruvbox t))
 
 (use-package mood-line
   :config
@@ -183,11 +183,8 @@
     "b" 'switch-to-buffer
     "d" 'dired
     "e" 'find-file
-    "g" 'keyboard-escape-quit
     "l" 'ibuffer
     "o" 'other-window
-    "j" 'next-buffer
-    "k" 'previous-buffer
     "q" 'kill-this-buffer
     "w" 'save-buffer)
   (evil-leader/set-key-for-mode 'emacs-lisp-mode "x" 'eval-last-sexp)
@@ -290,6 +287,7 @@
 
 (use-package exec-path-from-shell
   :config
+  (setq exec-path-from-shell-check-startup-files nil)
   (when (memq window-system '(mac ns x))
     (exec-path-from-shell-initialize)))
 
@@ -298,3 +296,23 @@
   (neo-theme 'nerd)
   :config
   (evil-leader/set-key "t" 'neotree-toggle))
+
+(use-package all-the-icons)
+
+(use-package centaur-tabs
+  :demand
+  :config
+  (setq centaur-tabs-style "bar"
+	centaur-tabs-set-icons t
+	centaur-tabs-set-close-button nil
+	centaur-tabs-set-bar 'under
+	x-underline-at-descent-line t)
+  (centaur-tabs-headline-match)
+  (centaur-tabs-mode t)
+  (evil-leader/set-key "j" 'centaur-tabs-forward)
+  (evil-leader/set-key "k" 'centaur-tabs-backward)
+  :hook
+  (term-mode . centaur-tabs-local-mode)
+  (calendar-mode . centaur-tabs-local-mode)
+  (org-agenda-mode . centaur-tabs-local-mode)
+  (helpful-mode . centaur-tabs-local-mode))
