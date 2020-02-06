@@ -1,130 +1,166 @@
-;; Improve emacs speed
-(setq inhibit-compacting-font-caches nil)
-(setq gc-cons-threshold #x1000000)
-(run-with-idle-timer 2 t (lambda () (garbage-collect)))
+;;;; init.el --- Emacs init file
+;; Author: Wren Zhang
 
-;; Custom and package initialization
-(setq custom-file "~/.emacs.d/custom.el")
-(load custom-file 'noerror)
-(when (version< emacs-version "26.3")
-  (setq gnutls-algorithm-priority "NORMAL:-VERS-TLS1.3"))
+(defvar file-name-handler-alist-original file-name-handler-alist)
+(setq gc-cons-threshold most-positive-fixnum
+      gc-cons-percentage 0.6
+      file-name-handler-alist nil
+      site-run-file nil)
+(add-hook 'emacs-startup-hook
+	  #'(lambda ()
+	      (setq inhibit-compacting-font-caches t
+		    gc-cons-threshold 20000000
+		    gc-cons-percentage 0.1
+		    file-name-handler-alist file-name-handler-alist-original)))
+
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
+(setq package-enable-at-startup nil)
 (package-initialize)
+
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
+(eval-and-compile
+  (setq use-package-always-ensure t
+	use-package-expand-minimally t))
+
+(setq custom-file "~/.emacs.d/custom.el")
+(load custom-file 'noerror)
 
 ;; File and edit settings
-(setq auto-save-default nil)
-(setq backup-directory-alist `(("." . "~/.emacs.d/backups")))
-(setq backup-by-copying t)
-(setq create-lockfiles nil)
-(add-hook 'after-init-hook (lambda () (electric-pair-mode t)))
-(add-hook 'before-save-hook 'delete-trailing-whitespace)
-(add-hook 'prog-mode-hook 'hl-line-mode)
-(add-hook 'dired-mode-hook 'auto-revert-mode)
-(add-hook 'pdf-view-mode-hook 'auto-revert-mode)
+(use-package emacs
+  :custom
+  (user-full-name "Wren Zhang")
+  (frame-title-format '("Emacs"))
+  (ring-bell-function 'ignore)
+  (frame-resize-pixelwise t)
+  (scroll-conservatively 10000)
+  (scroll-preserve-screen-position t)
+  (load-prefer-newer t)
+  (auto-save-default nil)
+  (create-lockfiles nil)
+  (backup-directory-alist `((".")))
+  (backup-by-copying t)
+  (confirm-kill-processes nil)
+  (inhibit-startup-screen t)
+  :config
+  (set-face-attribute 'default nil
+		      :family "Sometype Mono"
+		      :height (if (eq system-type 'darwin) 120 100))
+  (defalias 'yes-or-no-p 'y-or-n-p)
+  (tool-bar-mode 0)
+  (menu-bar-mode 0)
+  (blink-cursor-mode 0)
+  (scroll-bar-mode 0)
+  (when (eq system-type 'gnu/linux)
+    (setq x-gtk-use-system-tooltips nil
+	  dired-listing-switches "-alhG --group-directories-first")))
 
-;; Display settings
-(set-face-attribute 'default nil
-		    :family "Sometype Mono"
-		    :height (if (eq system-type 'darwin) 120 100))
-(add-hook 'after-init-hook (lambda () (blink-cursor-mode 0)))
-(add-hook 'after-init-hook (lambda () (menu-bar-mode 0)))
-(add-hook 'after-init-hook (lambda () (tool-bar-mode 0)))
-(add-hook 'after-init-hook (lambda () (scroll-bar-mode 0)))
-(add-hook 'after-init-hook (lambda () (show-paren-mode 1)))
-(defalias 'yes-or-no-p 'y-or-n-p)
-(setq inhibit-startup-screen t)
-(setq frame-title-format "%b")
-(setq ring-bell-function 'ignore)
-(when (eq system-type 'gnu/linux)
-  (setq x-gtk-use-system-tooltips nil
-	dired-listing-switches "-alhG --group-directories-first"))
-(when (version< "26" emacs-version)
-  (add-hook 'prog-mode-hook 'display-line-numbers-mode)
+(use-package autorevert
+  :ensure nil
+  :custom
+  (auto-revert-interval 2)
+  (auto-revert-check-vc-info t)
+  (global-auto-revert-non-file-buffers t)
+  (auto-revert-verbose nil)
+  :config
+  (global-auto-revert-mode t))
+
+(use-package python
+  :ensure nil
+  :custom
+  (python-indent-offet 4)
+  (python-shell-interpreter "python3"))
+
+(use-package paren
+  :ensure nil
+  :init
+  (setq show-paren-delay 0)
+  :config
+  (show-paren-mode t))
+
+(use-package flyspell
+  :ensure nil
+  :custom
+  (ispell-program-name "aspell")
+  :hook
+  (text-mode . flyspell-mode))
+
+(use-package elec-pair
+  :ensure nil
+  :hook (prog-mode . electric-pair-mode))
+
+(use-package whitespace
+  :ensure nil
+  :hook (before-save . whitespace-cleanup))
+
+(use-package display-line-numbers
+  :ensure nil
+  :hook (prog-mode . display-line-numbers-mode)
+  :config
+  (setq-default display-line-numbers-width 3)
   (setq display-line-numbers-type 'relative))
-
-(use-package diminish
-  :ensure t)
 
 (use-package recentf
   :ensure nil
   :config
-  (setq recentf-max-saved-items 25)
-  (run-at-time nil (* 5 60)
+  (run-at-time nil 60
 	       '(lambda () (let ((inhibit-message t)) (recentf-save-list))))
   (add-to-list 'recentf-exclude (format "%s/\\.emacs\\.d/elpa/.*" (getenv "HOME")))
   :hook
-  (after-init . (lambda () (progn
-			     (setq recentf-auto-cleanup 'never)
-			     (recentf-mode t)
-			     (setq recentf-auto-cleanup 60)))))
+  (after-init . (lambda ()
+		  (setq recentf-auto-cleanup 'never)
+		  (recentf-mode t)
+		  (setq recentf-auto-cleanup 60))))
 
 (use-package gruvbox-theme
-  :ensure t
-  :hook
-  (after-init . (lambda () (load-theme 'gruvbox-dark-medium t))))
-
+  :config
+  (load-theme 'gruvbox-dark-medium t))
 
 (use-package mood-line
-  :ensure t
   :config
-  :hook
-  (after-init . mood-line-mode))
+  (mood-line-mode t))
 
 (use-package ivy
-  :ensure t
   :config
   (setq ivy-use-virtual-buffers t)
   (setq enable-recursive-minibuffers t)
-  (setq ivy-re-builders-alist
-	'((ivy-bibtex . ivy--regex-ignore-order)
-	  (swiper . ivy--regex-plus)
-	  (t . ivy--regex-fuzzy)))
+  (setq ivy-re-builders-alist '((ivy-bibtex . ivy--regex-ignore-order)
+				(swiper . ivy--regex-plus)
+				(t . ivy--regex-fuzzy)))
   :hook
-  (after-init . (lambda () (ivy-mode t)))
+  (after-init . ivy-mode )
   :bind
   ("C-s" . 'swiper))
 
 (use-package counsel
-  :ensure t
   :after ivy
   :hook
-  (after-init . counsel-mode))
+  (ivy-mode . counsel-mode))
 
 (use-package ivy-posframe
-  :ensure t
   :config
   (setq ivy-posframe-display-functions-alist
-	'((t . ivy-posframe-display-at-frame-center)))
+	'((t . ivy-posframe-display-at-frame-top-center)))
   (setq ivy-posframe-parameters '((left-fringe . 8) (right-fringe . 8)))
-  :hook
-  (after-init . (lambda () (ivy-posframe-mode t))))
+  (ivy-posframe-mode t))
 
 (use-package company
-  :ensure t
   :hook
-  (after-init . (lambda () (global-company-mode t))))
+  (prog-mode . company-mode)
+  :custom
+  (company-minimum-prefix-length 1)
+  (company-idle-delay 0)
+  (company-selection-wrap-around t)
+  (company-tooltip-align-annotations t))
 
 (use-package company-quickhelp
-  :ensure t
   :hook
   (after-init . company-quickhelp-mode))
 
-(use-package vterm
-  :ensure t)
-
-(use-package flyspell
-  :config
-  (setq ispell-program-name "aspell")
-  (setq ispell-really-aspell t)
-  :hook
-  (text-mode . flyspell-mode))
 
 (use-package evil
-  :ensure t
   :init
   (setq evil-want-integration t)
   (setq evil-want-keybinding nil)
@@ -137,7 +173,6 @@
     (kbd "k") 'evil-previous-visual-line))
 
 (use-package evil-leader
-  :ensure t
   :config
   (global-evil-leader-mode)
   (evil-mode t)
@@ -150,57 +185,42 @@
     "e" 'find-file
     "g" 'keyboard-escape-quit
     "l" 'ibuffer
-    "m" 'magit-status
     "o" 'other-window
     "j" 'next-buffer
     "k" 'previous-buffer
     "q" 'kill-this-buffer
-    "r" (lambda () (interactive) (revert-buffer nil t))
-    "w" 'save-buffer
-    "v" 'vterm)
+    "w" 'save-buffer)
   (evil-leader/set-key-for-mode 'emacs-lisp-mode "x" 'eval-last-sexp)
-  (evil-leader/set-key-for-mode 'python-mode "x" 'python-shell-send-buffer)
-  (evil-leader/set-key-for-mode 'latex-mode "w" 'TeX-command-run-all)
-  (evil-leader/set-key-for-mode 'latex-mode "i" 'ivy-bibtex))
+  (evil-leader/set-key-for-mode 'python-mode "x" 'python-shell-send-buffer))
 
 (use-package evil-collection
   :after evil
-  :ensure t
   :config
   (evil-collection-init))
 
 (use-package evil-surround
-  :ensure t
   :config
   (global-evil-surround-mode t))
 
 (use-package evil-mc
-  :ensure t
-  :hook
-  (after-init . global-evil-mc-mode))
+  :config
+  (global-evil-mc-mode t))
 
 (use-package undo-tree
-  :ensure t
   :config
   (setq undo-tree-visualizer-diff t)
-  :hook
-  (after-init . global-undo-tree-mode))
+  (global-undo-tree-mode t))
 
 (use-package key-chord
-  :ensure t
   :config
   (key-chord-define-global
    "jk" (lambda () (interactive)
 	  (call-interactively (key-binding (kbd "<escape>")))))
-  (key-chord-define-global
-   "zz" (lambda () (interactive)
-	  (if (eq evil-state 'emacs) (evil-exit-emacs-state)
-	    (evil-emacs-state))))
-  :hook
-  (after-init . (lambda () (key-chord-mode t))))
+  (key-chord-mode t))
 
 (use-package pdf-tools
-  :ensure t)
+  :custom
+  (pdf-view-use-scaling t))
 
 (use-package latex
   :ensure auctex
@@ -213,62 +233,68 @@
   (setq TeX-source-correlate-method 'synctex)
   (setq TeX-view-program-selection '((output-pdf "PDF Tools")))
   (setq TeX-source-correlate-start-server t)
-  (setq tex-directory "~/.tex")
   (add-hook 'TeX-after-compilation-finished-functions
 	    #'TeX-revert-document-buffer)
+  (evil-leader/set-key-for-mode 'latex-mode "w" 'TeX-command-run-all)
+  (evil-leader/set-key-for-mode 'latex-mode "i" 'ivy-bibtex)
   :hook
   (LaTeX-mode . visual-line-mode)
   (LaTeX-mode . pdf-loader-install)
   (LaTeX-mode . LaTeX-math-mode))
 
 (use-package visual-fill-column
-  :ensure t
-  :config
-  (setq visual-fill-column-width 80)
-  (setq visual-fill-column-center-text t)
+  :custom
+  (visual-fill-column-width 80)
+  (visual-fill-column-center-text t)
   :hook
   (visual-line-mode . visual-fill-column-mode)
   (visual-fill-column-mode . (lambda () (setq visual-fill-column-center-text t))))
 
 (use-package company-lsp
-  :ensure t
   :commands company-lsp
   :config
   (push 'company-lsp company-backends))
 
 (use-package lsp-mode
-  :ensure t
   :commands lsp)
 
-(use-package ccls
-  :ensure t
-  :hook ((c-mode c++-mode objc-mode cuda-mode) . (lambda () (lsp))))
-
 (use-package poetry
-  :ensure t
   :hook
   (python-mode . poetry-tracking-mode))
 
-(use-package ebib
-  :ensure t)
-
 (use-package magit
-  :ensure t)
-
-(use-package evil-magit
-  :ensure t)
-
-(use-package yasnippet
-  :ensure t
-  :hook
-  (after-init . (lambda () (yas-global-mode t))))
-
-(use-package yasnippet-snippets
-  :ensure t)
-
-(use-package ivy-bibtex
   :ensure t
   :config
+  (evil-leader/set-key "m" 'magit-status))
+
+(use-package evil-magit)
+
+(use-package yasnippet
+  :defer t
+  :config
+  (yas-global-mode t))
+
+(use-package yasnippet-snippets)
+
+(use-package ivy-bibtex
+  :config
   (setq bibtex-completion-bibliography
-	"~/Drive/Documents/Bibliography/library.bib")
+	(concat (if (file-directory-p "~/Drive")
+		    "~/Drive" "~/OneDrive")
+		"/Documents/Bibliography/library.bib"))
   (setq ivy-bibtex-default-action 'ivy-bibtex-insert-citation))
+
+(use-package vterm
+  :config
+  (evil-leader/set-key "v" 'vterm))
+
+(use-package exec-path-from-shell
+  :config
+  (when (memq window-system '(mac ns x))
+    (exec-path-from-shell-initialize)))
+
+(use-package neotree
+  :custom
+  (neo-theme 'nerd)
+  :config
+  (evil-leader/set-key "t" 'neotree-toggle))
