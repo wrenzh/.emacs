@@ -102,6 +102,10 @@
   (setq-default display-line-numbers-width 3)
   (setq display-line-numbers-type 'relative))
 
+(use-package hl-line
+  :ensure nil
+  :hook (prog-mode . hl-line-mode))
+
 (use-package recentf
   :ensure nil
   :config
@@ -118,9 +122,9 @@
   :config
   (load-theme 'doom-gruvbox t))
 
-(use-package mood-line
+(use-package doom-modeline
   :config
-  (mood-line-mode t))
+  (doom-modeline-mode t))
 
 (use-package ivy
   :config
@@ -159,7 +163,6 @@
   :hook
   (after-init . company-quickhelp-mode))
 
-
 (use-package evil
   :init
   (setq evil-want-integration t)
@@ -174,9 +177,9 @@
 
 (use-package evil-leader
   :config
+  (evil-leader/set-leader "<SPC>")
   (global-evil-leader-mode)
   (evil-mode t)
-  (evil-leader/set-leader "<SPC>")
   (evil-leader/set-key
     "0" 'delete-window
     "1" 'delete-other-windows
@@ -302,10 +305,11 @@
 (use-package centaur-tabs
   :demand
   :config
-  (setq centaur-tabs-style "bar"
+  (setq centaur-tabs-style "slant"
 	centaur-tabs-set-icons t
 	centaur-tabs-set-close-button nil
 	centaur-tabs-set-bar 'under
+	centaur-tabs-height 32
 	x-underline-at-descent-line t)
   (centaur-tabs-headline-match)
   (centaur-tabs-mode t)
