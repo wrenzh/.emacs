@@ -40,7 +40,7 @@
   (load-prefer-newer t)
   (auto-save-default nil)
   (create-lockfiles nil)
-  (backup-directory-alist `((".")))
+  (backup-directory-alist `(("~/.emacs.d/backups")))
   (backup-by-copying t)
   (confirm-kill-processes nil)
   (inhibit-startup-screen t)
@@ -70,7 +70,7 @@
 (use-package python
   :ensure nil
   :custom
-  (python-indent-offet 4)
+  (python-indent-offset 4)
   (python-shell-interpreter "python3"))
 
 (use-package paren
@@ -305,7 +305,7 @@
 (use-package centaur-tabs
   :demand
   :config
-  (setq centaur-tabs-style "slant"
+  (setq centaur-tabs-style "box"
 	centaur-tabs-set-icons t
 	centaur-tabs-set-close-button nil
 	centaur-tabs-set-bar 'under
@@ -313,8 +313,11 @@
 	x-underline-at-descent-line t)
   (centaur-tabs-headline-match)
   (centaur-tabs-mode t)
-  (evil-leader/set-key "j" 'centaur-tabs-forward)
-  (evil-leader/set-key "k" 'centaur-tabs-backward)
+  (global-set-key (kbd "C-<tab>") 'centaur-tabs-forward)
+  (global-set-key (kbd "<backtab>") 'centaur-tabs-backward)
+  (evil-define-key 'normal 'global
+    (kbd "g t") 'centaur-tabs-forward
+    (kbd "g T") 'centaur-tabs-backward)
   :hook
   (term-mode . centaur-tabs-local-mode)
   (calendar-mode . centaur-tabs-local-mode)

@@ -21,7 +21,7 @@
  '(load-prefer-newer t)
  '(lsp-pyls-plugins-pylint-enabled nil)
  '(package-selected-packages
-   '(doom-modeline doom-themes doom-theme centaur-tabs exec-path-from-shell vterm ccls gruvbox-theme dracula-theme yasnippets yasnippet-snippets yasnippet evil-collection visual-fill-column undo-tree poetry mood-line ivy-posframe ivy-bibtex flyspell-correct-ivy company-quickhelp ivy-postframe matlab evil-surround company-math company-lsp lsp-mode ebib all-the-icons leetcode diminish evil-mc evil-magit magit counsel ivy evil-leader evil neotree all-the-icons-dired key-chord pdf-tools monokai-theme auctex company use-package))
+   '(doom-modeline doom-themes doom-theme centaur-tabs exec-path-from-shell vterm gruvbox-theme dracula-theme yasnippets yasnippet-snippets yasnippet evil-collection visual-fill-column undo-tree poetry ivy-posframe ivy-bibtex flyspell-correct-ivy company-quickhelp ivy-postframe matlab evil-surround company-math company-lsp lsp-mode ebib all-the-icons leetcode diminish evil-mc evil-magit magit counsel ivy evil-leader evil neotree all-the-icons-dired key-chord pdf-tools monokai-theme auctex company use-package))
  '(python-indent-offet 4 t)
  '(python-shell-interpreter "python3")
  '(ring-bell-function 'ignore)
