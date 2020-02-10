@@ -40,7 +40,7 @@
   (load-prefer-newer t)
   (auto-save-default nil)
   (create-lockfiles nil)
-  (backup-directory-alist `(("~/.emacs.d/backups")))
+  (backup-directory-alist `(("." . "~/.emacs.d/backups")))
   (backup-by-copying t)
   (confirm-kill-processes nil)
   (inhibit-startup-screen t)
@@ -262,6 +262,11 @@
   :hook
   (python-mode . poetry-tracking-mode))
 
+(use-package lsp-python-ms
+  :hook (python-mode . (lambda ()
+			 (require 'lsp-python-ms)
+			 (lsp))))
+
 (use-package magit
   :ensure t
   :config
@@ -298,7 +303,7 @@
   :custom
   (neo-theme 'nerd)
   :config
-  (evil-leader/set-key "t" 'neotree-toggle))
+  (evil-leader/set-key "n" 'neotree-toggle))
 
 (use-package all-the-icons)
 
@@ -310,11 +315,13 @@
 	centaur-tabs-set-close-button nil
 	centaur-tabs-set-bar 'under
 	centaur-tabs-height 32
+	centaur-tabs-cycle-scope 'tabs
 	x-underline-at-descent-line t)
   (centaur-tabs-headline-match)
   (centaur-tabs-mode t)
   (global-set-key (kbd "C-<tab>") 'centaur-tabs-forward)
   (global-set-key (kbd "<backtab>") 'centaur-tabs-backward)
+  (evil-leader/set-key "t" 'centaur-tabs-counsel-switch-group)
   (evil-define-key 'normal 'global
     (kbd "g t") 'centaur-tabs-forward
     (kbd "g T") 'centaur-tabs-backward)
