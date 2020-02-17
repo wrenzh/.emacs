@@ -9,7 +9,7 @@
 (add-hook 'emacs-startup-hook
 	  #'(lambda ()
 	      (setq inhibit-compacting-font-caches t
-		    gc-cons-threshold 20000000
+		    gc-cons-threshold 200000000
 		    gc-cons-percentage 0.1
 		    file-name-handler-alist file-name-handler-alist-original)))
 
@@ -43,6 +43,7 @@
   (backup-directory-alist `(("." . "~/.emacs.d/backups")))
   (backup-by-copying t)
   (confirm-kill-processes nil)
+  (find-file-visit-truename t)
   (inhibit-startup-screen t)
   :config
   (set-face-attribute 'default nil
@@ -102,10 +103,6 @@
   (setq-default display-line-numbers-width 3)
   (setq display-line-numbers-type 'relative))
 
-(use-package hl-line
-  :ensure nil
-  :hook (prog-mode . hl-line-mode))
-
 (use-package recentf
   :ensure nil
   :config
@@ -123,16 +120,17 @@
   (load-theme 'doom-gruvbox t))
 
 (use-package doom-modeline
-  :config
-  (doom-modeline-mode t))
+  :custom
+  (doom-modeline-env-python-executable python-shell-interpreter)
+  :hook
+  (after-init . doom-modeline-mode))
 
 (use-package ivy
   :config
   (setq ivy-use-virtual-buffers t)
   (setq enable-recursive-minibuffers t)
   (setq ivy-re-builders-alist '((ivy-bibtex . ivy--regex-ignore-order)
-				(swiper . ivy--regex-plus)
-				(t . ivy--regex-fuzzy)))
+				(t . ivy--regex-plus)))
   :hook
   (after-init . ivy-mode )
   :bind
@@ -147,7 +145,7 @@
   :config
   (setq ivy-posframe-display-functions-alist
 	'((t . ivy-posframe-display-at-frame-top-center)))
-  (setq ivy-posframe-parameters '((left-fringe . 8) (right-fringe . 8)))
+  (setq ivy-posframe-parameters '((left-fringe . 10) (right-fringe . 10)))
   (ivy-posframe-mode t))
 
 (use-package company
@@ -186,7 +184,6 @@
     "b" 'switch-to-buffer
     "d" 'dired
     "e" 'find-file
-    "l" 'ibuffer
     "o" 'other-window
     "q" 'kill-this-buffer
     "w" 'save-buffer)
@@ -256,16 +253,10 @@
   (push 'company-lsp company-backends))
 
 (use-package lsp-mode
-  :commands lsp)
-
-(use-package poetry
-  :hook
-  (python-mode . poetry-tracking-mode))
-
-(use-package lsp-python-ms
-  :hook (python-mode . (lambda ()
-			 (require 'lsp-python-ms)
-			 (lsp))))
+  :commands lsp
+  :custom
+  (lsp-idle-delay 0.1)
+  (read-process-output-max (* 1024 1024)))
 
 (use-package magit
   :ensure t
@@ -301,7 +292,7 @@
 
 (use-package neotree
   :custom
-  (neo-theme 'nerd)
+  (neo-theme (if (display-graphic-p) 'icons 'arrow))
   :config
   (evil-leader/set-key "n" 'neotree-toggle))
 
@@ -314,7 +305,7 @@
 	centaur-tabs-set-icons t
 	centaur-tabs-set-close-button nil
 	centaur-tabs-set-bar 'under
-	centaur-tabs-height 32
+	centaur-tabs-height 28
 	centaur-tabs-cycle-scope 'tabs
 	x-underline-at-descent-line t)
   (centaur-tabs-headline-match)
@@ -322,9 +313,8 @@
   (global-set-key (kbd "C-<tab>") 'centaur-tabs-forward)
   (global-set-key (kbd "<backtab>") 'centaur-tabs-backward)
   (evil-leader/set-key "t" 'centaur-tabs-counsel-switch-group)
-  (evil-define-key 'normal 'global
-    (kbd "g t") 'centaur-tabs-forward
-    (kbd "g T") 'centaur-tabs-backward)
+  (evil-leader/set-key "j" 'centaur-tabs-forward)
+  (evil-leader/set-key "k" 'centaur-tabs-backward)
   :hook
   (term-mode . centaur-tabs-local-mode)
   (calendar-mode . centaur-tabs-local-mode)
