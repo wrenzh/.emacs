@@ -57,6 +57,11 @@
     (setq x-gtk-use-system-tooltips nil
 	  dired-listing-switches "-alhG --group-directories-first")))
 
+(use-package mouse
+  :ensure nil
+  :custom
+  (mouse-wheel-progressive-speed nil))
+
 (use-package autorevert
   :ensure nil
   :custom
@@ -114,9 +119,9 @@
 		  (recentf-mode t)
 		  (setq recentf-auto-cleanup 60))))
 
-(use-package dracula-theme
+(use-package gruvbox-theme
   :hook
-  (after-init . (lambda () (load-theme 'dracula t))))
+  (after-init . (lambda () (load-theme 'gruvbox-dark-soft t))))
 
 (use-package ivy
   :diminish ivy-mode
@@ -139,6 +144,14 @@
 (use-package ivy-rich
   :init
   (ivy-rich-mode 1))
+
+(use-package ivy-posframe
+  :diminish ivy-posframe-mode
+  :config
+  (setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-frame-center)))
+  (setq ivy-posframe-parameters '((left-fringe . 10)
+				  (right-fringe . 10)))
+  (ivy-posframe-mode t))
 
 (use-package company
   :diminish company-mode
@@ -179,8 +192,7 @@
     "e" 'find-file
     "o" 'other-window
     "q" 'kill-this-buffer
-    "w" 'save-buffer
-    "y" 'company-yasnippet)
+    "w" 'save-buffer)
   (evil-leader/set-key-for-mode 'emacs-lisp-mode "x" 'eval-last-sexp)
   (evil-leader/set-key-for-mode 'python-mode "x" 'python-shell-send-buffer))
 
@@ -210,6 +222,11 @@
   :custom
   (pdf-view-use-scaling t))
 
+(use-package olivetti
+  :diminish olivetti-mode
+  :config
+  (setq olivetti--visual-line-mode t))
+
 (use-package latex
   :ensure auctex
   :config
@@ -226,17 +243,9 @@
   (evil-leader/set-key-for-mode 'latex-mode "w" 'TeX-command-run-all)
   (evil-leader/set-key-for-mode 'latex-mode "i" 'ivy-bibtex)
   :hook
-  (LaTeX-mode . visual-line-mode)
+  (LaTeX-mode . olivetti-mode)
   (LaTeX-mode . pdf-loader-install)
   (LaTeX-mode . LaTeX-math-mode))
-
-(use-package visual-fill-column
-  :custom
-  (visual-fill-column-width 80)
-  (visual-fill-column-center-text t)
-  :hook
-  (visual-line-mode . visual-fill-column-mode)
-  (visual-fill-column-mode . (lambda () (setq visual-fill-column-center-text t))))
 
 (use-package company-lsp
   :commands company-lsp
@@ -259,7 +268,8 @@
 (use-package yasnippet
   :defer t
   :config
-  (yas-global-mode t))
+  (yas-global-mode t)
+  (global-set-key (kbd "<backtab>") 'company-yasnippet))
 
 (use-package yasnippet-snippets)
 

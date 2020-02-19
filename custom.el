@@ -35,7 +35,7 @@
  '(neo-theme 'arrow)
  '(objed-cursor-color "#fb4934")
  '(package-selected-packages
-   '(ivy-rich doom-theme exec-path-from-shell vterm dracula-theme yasnippets yasnippet-snippets yasnippet evil-collection visual-fill-column undo-tree ivy-bibtex flyspell-correct-ivy company-quickhelp ivy-postframe matlab evil-surround company-math company-lsp lsp-mode all-the-icons leetcode diminish evil-mc evil-magit magit counsel ivy evil-leader evil neotree all-the-icons-dired key-chord pdf-tools monokai-theme auctex company use-package))
+   '(ivy-posframe olivetti gruvbox-theme ivy-rich doom-theme exec-path-from-shell vterm yasnippets yasnippet-snippets yasnippet evil-collection visual-fill-column undo-tree ivy-bibtex flyspell-correct-ivy company-quickhelp ivy-postframe matlab evil-surround company-math company-lsp lsp-mode all-the-icons leetcode diminish evil-mc evil-magit magit counsel ivy evil-leader evil neotree all-the-icons-dired key-chord pdf-tools monokai-theme auctex company use-package))
  '(pdf-view-midnight-colors (cons "#ebdbb2" "#282828"))
  '(pdf-view-use-scaling t)
  '(python-indent-offet 4 t)
