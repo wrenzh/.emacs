@@ -9,8 +9,7 @@
 (add-hook 'emacs-startup-hook
 	  #'(lambda ()
 	      (setq inhibit-compacting-font-caches t
-		    gc-cons-threshold 200000000
-		    gc-cons-percentage 0.1
+		    gc-cons-threshold 500000000
 		    file-name-handler-alist file-name-handler-alist-original)))
 
 (require 'package)
@@ -71,8 +70,8 @@
 (use-package python
   :ensure nil
   :custom
-  (python-indent-offset 4)
-  (python-shell-interpreter "python3"))
+  (python-shell-interpreter "python3")
+  (python-indent-offset 4))
 
 (use-package paren
   :ensure nil
@@ -115,17 +114,12 @@
 		  (recentf-mode t)
 		  (setq recentf-auto-cleanup 60))))
 
-(use-package doom-themes
-  :config
-  (load-theme 'doom-gruvbox t))
-
-(use-package doom-modeline
-  :custom
-  (doom-modeline-env-python-executable python-shell-interpreter)
+(use-package dracula-theme
   :hook
-  (after-init . doom-modeline-mode))
+  (after-init . (lambda () (load-theme 'dracula t))))
 
 (use-package ivy
+  :diminish ivy-mode
   :config
   (setq ivy-use-virtual-buffers t)
   (setq enable-recursive-minibuffers t)
@@ -136,12 +130,19 @@
   :bind
   ("C-s" . 'swiper))
 
+
 (use-package counsel
   :after ivy
+  :diminish counsel-mode
   :hook
   (ivy-mode . counsel-mode))
 
+(use-package ivy-rich
+  :init
+  (ivy-rich-mode 1))
+
 (use-package ivy-posframe
+  :diminish ivy-posframe-mode
   :config
   (setq ivy-posframe-display-functions-alist
 	'((t . ivy-posframe-display-at-frame-top-center)))
@@ -149,6 +150,7 @@
   (ivy-posframe-mode t))
 
 (use-package company
+  :diminish company-mode
   :hook
   (prog-mode . company-mode)
   :custom
@@ -186,7 +188,8 @@
     "e" 'find-file
     "o" 'other-window
     "q" 'kill-this-buffer
-    "w" 'save-buffer)
+    "w" 'save-buffer
+    "y" 'company-yasnippet)
   (evil-leader/set-key-for-mode 'emacs-lisp-mode "x" 'eval-last-sexp)
   (evil-leader/set-key-for-mode 'python-mode "x" 'python-shell-send-buffer))
 
@@ -199,11 +202,8 @@
   :config
   (global-evil-surround-mode t))
 
-(use-package evil-mc
-  :config
-  (global-evil-mc-mode t))
-
 (use-package undo-tree
+  :diminish undo-tree-mode
   :config
   (setq undo-tree-visualizer-diff t)
   (global-undo-tree-mode t))
@@ -289,34 +289,3 @@
   (setq exec-path-from-shell-check-startup-files nil)
   (when (memq window-system '(mac ns x))
     (exec-path-from-shell-initialize)))
-
-(use-package neotree
-  :custom
-  (neo-theme (if (display-graphic-p) 'icons 'arrow))
-  :config
-  (evil-leader/set-key "n" 'neotree-toggle))
-
-(use-package all-the-icons)
-
-(use-package centaur-tabs
-  :demand
-  :config
-  (setq centaur-tabs-style "box"
-	centaur-tabs-set-icons t
-	centaur-tabs-set-close-button nil
-	centaur-tabs-set-bar 'under
-	centaur-tabs-height 28
-	centaur-tabs-cycle-scope 'tabs
-	x-underline-at-descent-line t)
-  (centaur-tabs-headline-match)
-  (centaur-tabs-mode t)
-  (global-set-key (kbd "C-<tab>") 'centaur-tabs-forward)
-  (global-set-key (kbd "<backtab>") 'centaur-tabs-backward)
-  (evil-leader/set-key "t" 'centaur-tabs-counsel-switch-group)
-  (evil-leader/set-key "j" 'centaur-tabs-forward)
-  (evil-leader/set-key "k" 'centaur-tabs-backward)
-  :hook
-  (term-mode . centaur-tabs-local-mode)
-  (calendar-mode . centaur-tabs-local-mode)
-  (org-agenda-mode . centaur-tabs-local-mode)
-  (helpful-mode . centaur-tabs-local-mode))
