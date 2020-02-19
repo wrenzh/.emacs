@@ -130,7 +130,6 @@
   :bind
   ("C-s" . 'swiper))
 
-
 (use-package counsel
   :after ivy
   :diminish counsel-mode
@@ -140,14 +139,6 @@
 (use-package ivy-rich
   :init
   (ivy-rich-mode 1))
-
-(use-package ivy-posframe
-  :diminish ivy-posframe-mode
-  :config
-  (setq ivy-posframe-display-functions-alist
-	'((t . ivy-posframe-display-at-frame-top-center)))
-  (setq ivy-posframe-parameters '((left-fringe . 10) (right-fringe . 10)))
-  (ivy-posframe-mode t))
 
 (use-package company
   :diminish company-mode
