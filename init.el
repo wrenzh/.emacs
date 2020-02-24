@@ -123,6 +123,12 @@
   :hook
   (after-init . (lambda () (load-theme 'gruvbox-dark-soft t))))
 
+(use-package exec-path-from-shell
+  :config
+  (setq exec-path-from-shell-check-startup-files nil)
+  (when (memq window-system '(mac ns x))
+    (exec-path-from-shell-initialize)))
+
 (use-package ivy
   :diminish ivy-mode
   :config
@@ -151,21 +157,8 @@
   (setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-frame-center)))
   (setq ivy-posframe-parameters '((left-fringe . 10)
 				  (right-fringe . 10)))
+  (setq ivy-posframe-height-alist '((t . 16)))
   (ivy-posframe-mode t))
-
-(use-package company
-  :diminish company-mode
-  :hook
-  (prog-mode . company-mode)
-  :custom
-  (company-minimum-prefix-length 1)
-  (company-idle-delay 0)
-  (company-selection-wrap-around t)
-  (company-tooltip-align-annotations t))
-
-(use-package company-quickhelp
-  :hook
-  (after-init . company-quickhelp-mode))
 
 (use-package evil
   :init
@@ -247,16 +240,33 @@
   (LaTeX-mode . pdf-loader-install)
   (LaTeX-mode . LaTeX-math-mode))
 
-(use-package company-lsp
-  :commands company-lsp
-  :config
-  (push 'company-lsp company-backends))
-
 (use-package lsp-mode
   :commands lsp
   :custom
   (lsp-idle-delay 0.1)
   (read-process-output-max (* 1024 1024)))
+
+(use-package yasnippet
+  :diminish yas-minor-mode
+  :config
+  (yas-global-mode t))
+
+(use-package yasnippet-snippets)
+
+(use-package company
+  :diminish company-mode
+  :hook
+  (prog-mode . company-mode)
+  :custom
+  (company-minimum-prefix-length 2)
+  (company-idle-delay 0.1)
+  (company-selection-wrap-around t)
+  (company-tooltip-align-annotations t))
+
+(use-package company-lsp
+  :commands company-lsp
+  :config
+  (push 'company-lsp company-backends))
 
 (use-package magit
   :ensure t
@@ -264,14 +274,6 @@
   (evil-leader/set-key "m" 'magit-status))
 
 (use-package evil-magit)
-
-(use-package yasnippet
-  :defer t
-  :config
-  (yas-global-mode t)
-  (global-set-key (kbd "<backtab>") 'company-yasnippet))
-
-(use-package yasnippet-snippets)
 
 (use-package ivy-bibtex
   :config
@@ -285,8 +287,16 @@
   :config
   (evil-leader/set-key "v" 'vterm))
 
-(use-package exec-path-from-shell
+(use-package spice-mode
+  :hook
+  (spice-mode . display-line-numbers-mode)
+  :mode
+  ("\\.cir\\'" . spice-mode))
+
+(use-package pyvenv
+  :hook
+  (python-mode . pyvenv-mode)
   :config
-  (setq exec-path-from-shell-check-startup-files nil)
-  (when (memq window-system '(mac ns x))
-    (exec-path-from-shell-initialize)))
+  (evil-leader/set-key "x" '(lambda ()
+			      (pyvenv-restart-python)
+			      (python-shell-send-buffer))))
