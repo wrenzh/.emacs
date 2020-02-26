@@ -55,7 +55,11 @@
   (scroll-bar-mode 0)
   (when (eq system-type 'gnu/linux)
     (setq x-gtk-use-system-tooltips nil
-	  dired-listing-switches "-alhG --group-directories-first")))
+	  dired-listing-switches "-alhG --group-directories-first"))
+  (add-to-list 'default-frame-alist (cons 'width 160))
+  (add-to-list 'default-frame-alist (cons 'height 60))
+  (global-set-key (kbd "C-<tab>") 'other-window)
+  (global-set-key (kbd "C-`") '(lambda () (interactive) (other-window -1))))
 
 (use-package mouse
   :ensure nil
@@ -157,6 +161,7 @@
   (setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-frame-center)))
   (setq ivy-posframe-parameters '((left-fringe . 10)
 				  (right-fringe . 10)))
+  (setq ivy-posframe-min-width 120)
   (setq ivy-posframe-height-alist '((t . 16)))
   (ivy-posframe-mode t))
 
@@ -186,8 +191,7 @@
     "o" 'other-window
     "q" 'kill-this-buffer
     "w" 'save-buffer)
-  (evil-leader/set-key-for-mode 'emacs-lisp-mode "x" 'eval-last-sexp)
-  (evil-leader/set-key-for-mode 'python-mode "x" 'python-shell-send-buffer))
+  (evil-leader/set-key-for-mode 'emacs-lisp-mode "x" 'eval-last-sexp))
 
 (use-package evil-collection
   :after evil
@@ -278,8 +282,7 @@
 (use-package ivy-bibtex
   :config
   (setq bibtex-completion-bibliography
-	(concat (if (file-directory-p "~/Drive")
-		    "~/Drive" "~/OneDrive")
+	(concat (if (file-directory-p "~/Drive") "~/Drive" "~/OneDrive")
 		"/Documents/Bibliography/library.bib"))
   (setq ivy-bibtex-default-action 'ivy-bibtex-insert-citation))
 
@@ -294,9 +297,8 @@
   ("\\.cir\\'" . spice-mode))
 
 (use-package pyvenv
-  :hook
-  (python-mode . pyvenv-mode)
   :config
-  (evil-leader/set-key "x" '(lambda ()
-			      (pyvenv-restart-python)
-			      (python-shell-send-buffer))))
+  (evil-leader/set-key-for-mode 'python-mode "a" 'pyvenv-activate)
+  (evil-leader/set-key-for-mode 'python-mode "r" 'pyvenv-restart-python)
+  (evil-leader/set-key-for-mode 'python-mode "x" 'python-shell-send-buffer)
+  (evil-leader/set-key-for-mode 'python-mode "f" 'flymake-show-diagnostics-buffer))
