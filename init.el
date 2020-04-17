@@ -9,7 +9,7 @@
 (add-hook 'emacs-startup-hook
 	  #'(lambda ()
 	      (setq inhibit-compacting-font-caches t
-		    gc-cons-threshold 500000000
+		    gc-cons-threshold 120000000
 		    file-name-handler-alist file-name-handler-alist-original)))
 
 (require 'package)
@@ -47,15 +47,14 @@
   :config
   (set-face-attribute 'default nil
 		      :family "Sometype Mono"
-		      :height (if (eq system-type 'darwin) 120 100))
+		      :height 100)
   (defalias 'yes-or-no-p 'y-or-n-p)
   (tool-bar-mode 0)
-  (menu-bar-mode 0)
+  (menu-bar-mode 1)
   (blink-cursor-mode 0)
   (scroll-bar-mode 0)
   (when (eq system-type 'gnu/linux)
-    (setq x-gtk-use-system-tooltips nil
-	  dired-listing-switches "-alhG --group-directories-first"))
+    (setq dired-listing-switches "-laX --group-directories-first"))
   (add-to-list 'default-frame-alist (cons 'width 160))
   (add-to-list 'default-frame-alist (cons 'height 60))
   (global-set-key (kbd "C-<tab>") 'other-window)
@@ -93,6 +92,7 @@
   :ensure nil
   :custom
   (ispell-program-name "aspell")
+  (ispell-personal-dictionary "~/.emacs.d/")
   :hook
   (text-mode . flyspell-mode))
 
@@ -125,7 +125,7 @@
 
 (use-package gruvbox-theme
   :hook
-  (after-init . (lambda () (load-theme 'gruvbox-dark-soft t))))
+  (after-init . (lambda () (load-theme 'gruvbox t))))
 
 (use-package exec-path-from-shell
   :config
@@ -140,8 +140,7 @@
   (setq enable-recursive-minibuffers t)
   (setq ivy-re-builders-alist '((ivy-bibtex . ivy--regex-ignore-order)
 				(t . ivy--regex-plus)))
-  :hook
-  (after-init . ivy-mode )
+  :hook (after-init . ivy-mode)
   :bind
   ("C-s" . 'swiper))
 
@@ -158,9 +157,10 @@
 (use-package ivy-posframe
   :diminish ivy-posframe-mode
   :config
-  (setq ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-frame-center)))
-  (setq ivy-posframe-parameters '((left-fringe . 10)
-				  (right-fringe . 10)))
+  (setq ivy-posframe-display-functions-alist
+	'((t . ivy-posframe-display-at-frame-center)))
+  (setq ivy-posframe-parameters
+	'((left-fringe . 10) (right-fringe . 10)))
   (setq ivy-posframe-min-width 120)
   (setq ivy-posframe-height-alist '((t . 16)))
   (ivy-posframe-mode t))
@@ -188,7 +188,6 @@
     "b" 'switch-to-buffer
     "d" 'dired
     "e" 'find-file
-    "o" 'other-window
     "q" 'kill-this-buffer
     "w" 'save-buffer)
   (evil-leader/set-key-for-mode 'emacs-lisp-mode "x" 'eval-last-sexp))
@@ -213,6 +212,7 @@
   (key-chord-define-global
    "jk" (lambda () (interactive)
 	  (call-interactively (key-binding (kbd "<escape>")))))
+  (key-chord-define-global "vv" 'ivy-switch-buffer)
   (key-chord-mode t))
 
 (use-package pdf-tools
