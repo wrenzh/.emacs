@@ -50,11 +50,11 @@
 		      :height 100)
   (defalias 'yes-or-no-p 'y-or-n-p)
   (tool-bar-mode 0)
-  (menu-bar-mode 1)
+  (menu-bar-mode 0)
   (blink-cursor-mode 0)
   (scroll-bar-mode 0)
   (when (eq system-type 'gnu/linux)
-    (setq dired-listing-switches "-laX --group-directories-first"))
+    (setq dired-listing-switches "-alFhX"))
   (add-to-list 'default-frame-alist (cons 'width 160))
   (add-to-list 'default-frame-alist (cons 'height 60))
   (global-set-key (kbd "C-<tab>") 'other-window)
@@ -132,6 +132,8 @@
   (setq exec-path-from-shell-check-startup-files nil)
   (when (memq window-system '(mac ns x))
     (exec-path-from-shell-initialize)))
+
+(use-package diminish)
 
 (use-package ivy
   :diminish ivy-mode
@@ -285,10 +287,6 @@
 	(concat (if (file-directory-p "~/Drive") "~/Drive" "~/OneDrive")
 		"/Documents/Bibliography/library.bib"))
   (setq ivy-bibtex-default-action 'ivy-bibtex-insert-citation))
-
-(use-package vterm
-  :config
-  (evil-leader/set-key "v" 'vterm))
 
 (use-package spice-mode
   :hook
