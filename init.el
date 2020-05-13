@@ -53,12 +53,9 @@
   (menu-bar-mode 0)
   (blink-cursor-mode 0)
   (scroll-bar-mode 0)
-  (when (eq system-type 'gnu/linux)
-    (setq dired-listing-switches "-alFhX"))
+  (when (eq system-type 'gnu/linux) (setq dired-listing-switches "-alvFh --group-directories-first"))
   (add-to-list 'default-frame-alist (cons 'width 160))
-  (add-to-list 'default-frame-alist (cons 'height 60))
-  (global-set-key (kbd "C-<tab>") 'other-window)
-  (global-set-key (kbd "C-`") '(lambda () (interactive) (other-window -1))))
+  (add-to-list 'default-frame-alist (cons 'height 60)))
 
 (use-package mouse
   :ensure nil
@@ -70,7 +67,7 @@
   :custom
   (auto-revert-interval 2)
   (auto-revert-check-vc-info t)
-  (global-auto-revert-non-file-buffers t)
+  (global-auto-revert-no-file-buffers t)
   (auto-revert-verbose nil)
   :config
   (global-auto-revert-mode t))
@@ -79,7 +76,9 @@
   :ensure nil
   :custom
   (python-shell-interpreter "python3")
-  (python-indent-offset 4))
+  (python-indent-offset 4)
+  :hook
+  (python-mode . electric-pair-mode))
 
 (use-package paren
   :ensure nil
@@ -98,7 +97,8 @@
 
 (use-package elec-pair
   :ensure nil
-  :hook (prog-mode . electric-pair-mode))
+  :hook
+  (elisp-mode . electric-pair-mode))
 
 (use-package whitespace
   :ensure nil
@@ -191,7 +191,8 @@
     "d" 'dired
     "e" 'find-file
     "q" 'kill-this-buffer
-    "w" 'save-buffer)
+    "w" 'save-buffer
+    "o" 'other-window)
   (evil-leader/set-key-for-mode 'emacs-lisp-mode "x" 'eval-last-sexp))
 
 (use-package evil-collection
@@ -223,8 +224,9 @@
 
 (use-package olivetti
   :diminish olivetti-mode
-  :config
-  (setq olivetti--visual-line-mode t))
+  :custom
+  (olivetti--visual-line-mode t)
+  (olivetti-body-width 80))
 
 (use-package latex
   :ensure auctex
@@ -240,8 +242,8 @@
   (add-hook 'TeX-after-compilation-finished-functions
 	    #'TeX-revert-document-buffer)
   (evil-leader/set-key-for-mode 'latex-mode "w" 'TeX-command-run-all)
-  (evil-leader/set-key-for-mode 'latex-mode "i" 'ivy-bibtex)
   :hook
+  (LaTeX-mode . electric-pair-mode)
   (LaTeX-mode . olivetti-mode)
   (LaTeX-mode . pdf-loader-install)
   (LaTeX-mode . LaTeX-math-mode))
@@ -286,7 +288,8 @@
   (setq bibtex-completion-bibliography
 	(concat (if (file-directory-p "~/Drive") "~/Drive" "~/OneDrive")
 		"/Documents/Bibliography/library.bib"))
-  (setq ivy-bibtex-default-action 'ivy-bibtex-insert-citation))
+  (setq ivy-bibtex-default-action 'ivy-bibtex-insert-citation)
+  (evil-define-key 'insert LaTeX-mode-map (kbd "M-i") 'ivy-bibtex))
 
 (use-package spice-mode
   :hook
