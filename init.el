@@ -31,7 +31,7 @@
 (use-package emacs
   :custom
   (user-full-name "Wren Zhang")
-  (frame-title-format '("Emacs"))
+  (frame-title-format '("%b"))
   (ring-bell-function 'ignore)
   (frame-resize-pixelwise t)
   (scroll-conservatively 10000)
@@ -47,7 +47,7 @@
   :config
   (set-face-attribute 'default nil
 		      :family "Sometype Mono"
-		      :height 100)
+		      :height (if (eq window-system 'ns) 120 100))
   (defalias 'yes-or-no-p 'y-or-n-p)
   (tool-bar-mode 0)
   (menu-bar-mode 0)
@@ -61,6 +61,19 @@
   :ensure nil
   :custom
   (mouse-wheel-progressive-speed nil))
+
+(use-package desktop
+  :ensure nil
+  :config
+  (desktop-save-mode 1)
+  (setq history-length 100)
+  (add-to-list 'desktop-path "~/.emacs.d/desktop/")
+  (setq desktop-dirname "~/.emacs.d/desktop/")
+  (add-to-list 'desktop-modes-not-to-save 'help-mode)
+  (add-to-list 'desktop-modes-not-to-save 'dired-mode)
+  (add-to-list 'desktop-modes-not-to-save 'Info-mode)
+  (add-to-list 'desktop-modes-not-to-save 'info-lookup-mode)
+  (add-to-list 'desktop-modes-not-to-save 'fundamental-mode))
 
 (use-package autorevert
   :ensure nil
@@ -125,7 +138,7 @@
 
 (use-package gruvbox-theme
   :hook
-  (after-init . (lambda () (load-theme 'gruvbox t))))
+  (after-init . (lambda () (load-theme 'gruvbox-light-soft t))))
 
 (use-package exec-path-from-shell
   :config
@@ -303,3 +316,4 @@
   (evil-leader/set-key-for-mode 'python-mode "r" 'pyvenv-restart-python)
   (evil-leader/set-key-for-mode 'python-mode "x" 'python-shell-send-buffer)
   (evil-leader/set-key-for-mode 'python-mode "f" 'flymake-show-diagnostics-buffer))
+(put 'dired-find-alternate-file 'disabled nil)
