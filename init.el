@@ -3,7 +3,7 @@
 
 (defvar file-name-handler-alist-original file-name-handler-alist)
 (setq gc-cons-threshold most-positive-fixnum
-      gc-cons-percentage 0.6
+      gc-cons-percentage 0.02
       file-name-handler-alist nil
       site-run-file nil)
 (add-hook 'emacs-startup-hook
@@ -24,7 +24,7 @@
   (setq use-package-always-ensure t
 	use-package-expand-minimally t))
 
-(setq custom-file "~/.emacs.d/custom.el")
+(setq custom-file "~/.config/emacs/custom.el")
 (load custom-file 'noerror)
 
 ;; File and edit settings
@@ -39,7 +39,7 @@
   (load-prefer-newer t)
   (auto-save-default nil)
   (create-lockfiles nil)
-  (backup-directory-alist `(("." . "~/.emacs.d/backups")))
+  (backup-directory-alist `(("." . "~/.config/emacs/backups/")))
   (backup-by-copying t)
   (confirm-kill-processes nil)
   (find-file-visit-truename t)
@@ -67,8 +67,8 @@
   :config
   (desktop-save-mode 1)
   (setq history-length 100)
-  (add-to-list 'desktop-path "~/.emacs.d/desktop/")
-  (setq desktop-dirname "~/.emacs.d/desktop/")
+  (add-to-list 'desktop-path "~/.config/emacs/desktop/")
+  (setq desktop-dirname "~/.config/emacs/desktop/")
   (add-to-list 'desktop-modes-not-to-save 'help-mode)
   (add-to-list 'desktop-modes-not-to-save 'dired-mode)
   (add-to-list 'desktop-modes-not-to-save 'Info-mode)
@@ -104,7 +104,7 @@
   :ensure nil
   :custom
   (ispell-program-name "aspell")
-  (ispell-personal-dictionary "~/.emacs.d/")
+  (ispell-personal-dictionary "~/.config/aspell/dictionary")
   :hook
   (text-mode . flyspell-mode))
 
@@ -129,7 +129,7 @@
   :config
   (run-at-time nil 60
 	       '(lambda () (let ((inhibit-message t)) (recentf-save-list))))
-  (add-to-list 'recentf-exclude (format "%s/\\.emacs\\.d/elpa/.*" (getenv "HOME")))
+  (add-to-list 'recentf-exclude (format "%s/\\.config\\/emacs/elpa/.*" (getenv "HOME")))
   :hook
   (after-init . (lambda ()
 		  (setq recentf-auto-cleanup 'never)
@@ -200,10 +200,11 @@
   (evil-leader/set-key
     "0" 'delete-window
     "1" 'delete-other-windows
-    "b" 'switch-to-buffer
+    "b" 'ivy-switch-buffer
     "d" 'dired
     "e" 'find-file
-    "q" 'kill-this-buffer
+    "q" 'kill-buffer-and-window
+    "k" 'kill-this-buffer
     "w" 'save-buffer
     "o" 'other-window)
   (evil-leader/set-key-for-mode 'emacs-lisp-mode "x" 'eval-last-sexp))
@@ -228,7 +229,6 @@
   (key-chord-define-global
    "jk" (lambda () (interactive)
 	  (call-interactively (key-binding (kbd "<escape>")))))
-  (key-chord-define-global "vv" 'ivy-switch-buffer)
   (key-chord-mode t))
 
 (use-package pdf-tools
@@ -261,12 +261,6 @@
   (LaTeX-mode . pdf-loader-install)
   (LaTeX-mode . LaTeX-math-mode))
 
-(use-package lsp-mode
-  :commands lsp
-  :custom
-  (lsp-idle-delay 0.1)
-  (read-process-output-max (* 1024 1024)))
-
 (use-package yasnippet
   :diminish yas-minor-mode
   :config
@@ -283,11 +277,6 @@
   (company-idle-delay 0.1)
   (company-selection-wrap-around t)
   (company-tooltip-align-annotations t))
-
-(use-package company-lsp
-  :commands company-lsp
-  :config
-  (push 'company-lsp company-backends))
 
 (use-package magit
   :ensure t
