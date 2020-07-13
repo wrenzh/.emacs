@@ -62,19 +62,6 @@
   :custom
   (mouse-wheel-progressive-speed nil))
 
-(use-package desktop
-  :ensure nil
-  :config
-  (desktop-save-mode 1)
-  (setq history-length 100)
-  (add-to-list 'desktop-path "~/.config/emacs/desktop/")
-  (setq desktop-dirname "~/.config/emacs/desktop/")
-  (add-to-list 'desktop-modes-not-to-save 'help-mode)
-  (add-to-list 'desktop-modes-not-to-save 'dired-mode)
-  (add-to-list 'desktop-modes-not-to-save 'Info-mode)
-  (add-to-list 'desktop-modes-not-to-save 'info-lookup-mode)
-  (add-to-list 'desktop-modes-not-to-save 'fundamental-mode))
-
 (use-package autorevert
   :ensure nil
   :custom
