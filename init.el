@@ -117,6 +117,8 @@
   (run-at-time nil 60
 	       '(lambda () (let ((inhibit-message t)) (recentf-save-list))))
   (add-to-list 'recentf-exclude (format "%s/\\.config\\/emacs/elpa/.*" (getenv "HOME")))
+  (add-to-list 'recentf-exclude ".*.synctex.gz")
+  (add-to-list 'recentf-exclude "\\*.*\\*")
   :hook
   (after-init . (lambda ()
 		  (setq recentf-auto-cleanup 'never)
@@ -193,6 +195,10 @@
     "q" 'kill-buffer-and-window
     "k" 'kill-this-buffer
     "w" 'save-buffer
+    "h" 'evil-window-left
+    "j" 'evil-window-bottom
+    "k" 'evil-window-top
+    "l" 'evil-window-right
     "o" 'other-window)
   (evil-leader/set-key-for-mode 'emacs-lisp-mode "x" 'eval-last-sexp))
 
@@ -248,13 +254,6 @@
   (LaTeX-mode . pdf-loader-install)
   (LaTeX-mode . LaTeX-math-mode))
 
-(use-package yasnippet
-  :diminish yas-minor-mode
-  :config
-  (yas-global-mode t))
-
-(use-package yasnippet-snippets)
-
 (use-package company
   :diminish company-mode
   :hook
@@ -293,3 +292,5 @@
   (evil-leader/set-key-for-mode 'python-mode "x" 'python-shell-send-buffer)
   (evil-leader/set-key-for-mode 'python-mode "f" 'flymake-show-diagnostics-buffer))
 (put 'dired-find-alternate-file 'disabled nil)
+
+(use-package eglot)
