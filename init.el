@@ -53,6 +53,7 @@
   (menu-bar-mode 0)
   (blink-cursor-mode 0)
   (scroll-bar-mode 0)
+  (tooltip-mode 0)
   (when (eq system-type 'gnu/linux) (setq dired-listing-switches "-alvFh --group-directories-first"))
   (add-to-list 'default-frame-alist (cons 'width 160))
   (add-to-list 'default-frame-alist (cons 'height 60)))
