@@ -194,7 +194,7 @@
     "d" 'dired
     "e" 'find-file
     "q" 'kill-buffer-and-window
-    "k" 'kill-this-buffer
+    "c" 'kill-this-buffer
     "w" 'save-buffer
     "h" 'evil-window-left
     "j" 'evil-window-bottom
