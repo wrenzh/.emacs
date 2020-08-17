@@ -54,7 +54,8 @@
   (blink-cursor-mode 0)
   (scroll-bar-mode 0)
   (tooltip-mode 0)
-  (when (eq system-type 'gnu/linux) (setq dired-listing-switches "-alvFh --group-directories-first"))
+  (when (eq system-type 'gnu/linux)
+    (setq dired-listing-switches "-alvFh --group-directories-first"))
   (add-to-list 'default-frame-alist (cons 'width 160))
   (add-to-list 'default-frame-alist (cons 'height 60)))
 
@@ -292,6 +293,3 @@
   (evil-leader/set-key-for-mode 'python-mode "r" 'pyvenv-restart-python)
   (evil-leader/set-key-for-mode 'python-mode "x" 'python-shell-send-buffer)
   (evil-leader/set-key-for-mode 'python-mode "f" 'flymake-show-diagnostics-buffer))
-(put 'dired-find-alternate-file 'disabled nil)
-
-(use-package eglot)
