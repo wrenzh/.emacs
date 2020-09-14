@@ -198,8 +198,8 @@
     "c" 'kill-this-buffer
     "w" 'save-buffer
     "h" 'evil-window-left
-    "j" 'evil-window-bottom
-    "k" 'evil-window-top
+    "j" 'evil-window-down
+    "k" 'evil-window-up
     "l" 'evil-window-right
     "o" 'other-window)
   (evil-leader/set-key-for-mode 'emacs-lisp-mode "x" 'eval-last-sexp))
