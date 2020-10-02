@@ -116,8 +116,8 @@
 (use-package recentf
   :ensure nil
   :config
-  (run-at-time nil 60
-	       '(lambda () (let ((inhibit-message t)) (recentf-save-list))))
+  (run-at-time nil 120
+	       '(lambda () (let ((save-silently t)) (recentf-save-list))))
   (add-to-list 'recentf-exclude (format "%s/\\.config\\/emacs/elpa/.*" (getenv "HOME")))
   (add-to-list 'recentf-exclude ".*.synctex.gz")
   (add-to-list 'recentf-exclude "\\*.*\\*")
@@ -129,7 +129,7 @@
 
 (use-package gruvbox-theme
   :hook
-  (after-init . (lambda () (load-theme 'gruvbox-light-soft t))))
+  (after-init . (lambda () (load-theme 'gruvbox-dark-soft t))))
 
 (use-package exec-path-from-shell
   :config
