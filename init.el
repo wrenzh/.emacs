@@ -47,7 +47,7 @@
   :config
   (set-face-attribute 'default nil
 		      :family "Sometype Mono"
-		      :height (if (eq window-system 'ns) 130 120))
+		      :height (if (eq window-system 'ns) 140 120))
   (defalias 'yes-or-no-p 'y-or-n-p)
   (tool-bar-mode 0)
   (menu-bar-mode 0)
