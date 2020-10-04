@@ -47,7 +47,7 @@
   :config
   (set-face-attribute 'default nil
 		      :family "Sometype Mono"
-		      :height (if (eq window-system 'ns) 130 100))
+		      :height (if (eq window-system 'ns) 130 120))
   (defalias 'yes-or-no-p 'y-or-n-p)
   (tool-bar-mode 0)
   (menu-bar-mode 0)
@@ -79,8 +79,7 @@
   :custom
   (python-shell-interpreter "python3")
   (python-indent-offset 4)
-  :hook
-  (python-mode . electric-pair-mode))
+  :hook (python-mode . electric-pair-mode))
 
 (use-package paren
   :ensure nil
@@ -92,15 +91,13 @@
 (use-package flyspell
   :ensure nil
   :custom
-  (ispell-program-name "aspell")
-  (ispell-personal-dictionary "~/.config/aspell/dictionary")
-  :hook
-  (text-mode . flyspell-mode))
+  (ispell-program-name "hunspell")
+  (ispell-personal-dictionary "~/.config/emacs/dictionary")
+  :hook (text-mode . flyspell-mode))
 
 (use-package elec-pair
   :ensure nil
-  :hook
-  (elisp-mode . electric-pair-mode))
+  :hook (elisp-mode . electric-pair-mode))
 
 (use-package whitespace
   :ensure nil
@@ -110,7 +107,7 @@
   :ensure nil
   :hook (prog-mode . display-line-numbers-mode)
   :config
-  (setq-default display-line-numbers-width 3)
+  (setq-default display-line-numbers-width 4)
   (setq display-line-numbers-type 'relative))
 
 (use-package recentf
@@ -153,8 +150,7 @@
 (use-package counsel
   :after ivy
   :diminish counsel-mode
-  :hook
-  (ivy-mode . counsel-mode))
+  :hook (ivy-mode . counsel-mode))
 
 (use-package ivy-rich
   :init
@@ -258,8 +254,7 @@
 
 (use-package company
   :diminish company-mode
-  :hook
-  (prog-mode . company-mode)
+  :hook (prog-mode . company-mode)
   :custom
   (company-minimum-prefix-length 2)
   (company-idle-delay 0.1)
@@ -276,14 +271,12 @@
 (use-package ivy-bibtex
   :config
   (setq bibtex-completion-bibliography
-	(concat (if (file-directory-p "~/Drive") "~/Drive" "~/OneDrive")
-		"/Documents/Bibliography/library.bib"))
+	"~/OneDrive/Documents/Bibliography/library.bib")
   (setq ivy-bibtex-default-action 'ivy-bibtex-insert-citation)
   (evil-define-key 'insert LaTeX-mode-map (kbd "M-i") 'ivy-bibtex))
 
 (use-package spice-mode
-  :hook
-  (spice-mode . display-line-numbers-mode)
+  :hook (spice-mode . display-line-numbers-mode)
   :mode
   ("\\.cir\\'" . spice-mode))
 
@@ -293,3 +286,7 @@
   (evil-leader/set-key-for-mode 'python-mode "r" 'pyvenv-restart-python)
   (evil-leader/set-key-for-mode 'python-mode "x" 'python-shell-send-buffer)
   (evil-leader/set-key-for-mode 'python-mode "f" 'flymake-show-diagnostics-buffer))
+
+(use-package mood-line
+  :config
+  (mood-line-mode))
