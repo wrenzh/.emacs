@@ -209,12 +209,6 @@
   :config
   (global-evil-surround-mode t))
 
-(use-package undo-tree
-  :diminish undo-tree-mode
-  :config
-  (setq undo-tree-visualizer-diff t)
-  (global-undo-tree-mode t))
-
 (use-package key-chord
   :config
   (key-chord-define-global
