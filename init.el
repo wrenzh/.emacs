@@ -190,7 +190,7 @@
     "b" 'ivy-switch-buffer
     "d" 'dired
     "e" 'find-file
-    "q" 'kill-buffer-and-window
+    "C" 'kill-buffer-and-window
     "c" 'kill-this-buffer
     "w" 'save-buffer
     "h" 'evil-window-left
