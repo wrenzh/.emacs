@@ -47,7 +47,7 @@
   :config
   (set-face-attribute 'default nil
 		      :family "Sometype Mono"
-		      :height (if (eq window-system 'ns) 140 120))
+		      :height (if (eq window-system 'ns) 140 100))
   (defalias 'yes-or-no-p 'y-or-n-p)
   (tool-bar-mode 0)
   (menu-bar-mode 0)
@@ -126,7 +126,7 @@
 
 (use-package gruvbox-theme
   :hook
-  (after-init . (lambda () (load-theme 'gruvbox-dark-soft t))))
+  (after-init . (lambda () (load-theme 'gruvbox-light-soft t))))
 
 (use-package exec-path-from-shell
   :config
@@ -142,7 +142,8 @@
   (setq ivy-use-virtual-buffers t)
   (setq enable-recursive-minibuffers t)
   (setq ivy-re-builders-alist '((ivy-bibtex . ivy--regex-ignore-order)
-				(t . ivy--regex-plus)))
+				(swiper . ivy--regex-plus)
+				(t . ivy--regex-fuzzy)))
   :hook (after-init . ivy-mode)
   :bind
   ("C-s" . 'swiper))
@@ -171,6 +172,7 @@
   :init
   (setq evil-want-integration t)
   (setq evil-want-keybinding nil)
+  (setq evil-undo-system 'undo-fu)
   :config
   (evil-define-key 'normal 'global
     (kbd "j") 'evil-next-visual-line
@@ -187,6 +189,7 @@
   (evil-leader/set-key
     "0" 'delete-window
     "1" 'delete-other-windows
+    "5" 'make-frame-command
     "b" 'ivy-switch-buffer
     "d" 'dired
     "e" 'find-file
@@ -244,7 +247,15 @@
   (LaTeX-mode . electric-pair-mode)
   (LaTeX-mode . olivetti-mode)
   (LaTeX-mode . pdf-loader-install)
-  (LaTeX-mode . LaTeX-math-mode))
+  (LaTeX-mode . LaTeX-math-mode)
+  (LaTeX-mode . display-line-numbers-mode))
+
+(use-package magit
+  :ensure t
+  :config
+  (evil-leader/set-key "m" 'magit-status))
+
+(use-package evil-magit)
 
 (use-package company
   :diminish company-mode
@@ -254,13 +265,6 @@
   (company-idle-delay 0.1)
   (company-selection-wrap-around t)
   (company-tooltip-align-annotations t))
-
-(use-package magit
-  :ensure t
-  :config
-  (evil-leader/set-key "m" 'magit-status))
-
-(use-package evil-magit)
 
 (use-package ivy-bibtex
   :config
