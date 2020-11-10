@@ -46,8 +46,8 @@
   (inhibit-startup-screen t)
   :config
   (set-face-attribute 'default nil
-		      :family "Sometype Mono"
-		      :height (if (eq window-system 'ns) 140 100))
+		      :family "Fantasque Sans Mono"
+		      :height (if (eq window-system 'ns) 140 120))
   (defalias 'yes-or-no-p 'y-or-n-p)
   (tool-bar-mode 0)
   (menu-bar-mode 0)
@@ -56,7 +56,7 @@
   (tooltip-mode 0)
   (when (eq system-type 'gnu/linux)
     (setq dired-listing-switches "-alvFh --group-directories-first"))
-  (add-to-list 'default-frame-alist (cons 'width 160))
+  (add-to-list 'default-frame-alist (cons 'width 200))
   (add-to-list 'default-frame-alist (cons 'height 60)))
 
 (use-package mouse
@@ -181,6 +181,8 @@
     (kbd "j") 'evil-next-visual-line
     (kbd "k") 'evil-previous-visual-line))
 
+(use-package undo-fu)
+
 (use-package evil-leader
   :config
   (evil-leader/set-leader "<SPC>")
@@ -239,6 +241,7 @@
   (setq TeX-source-correlate-mode t)
   (setq TeX-source-correlate-method 'synctex)
   (setq TeX-view-program-selection '((output-pdf "PDF Tools")))
+  (setq bibtex-dialect 'biblatex)
   (setq TeX-source-correlate-start-server t)
   (add-hook 'TeX-after-compilation-finished-functions
 	    #'TeX-revert-document-buffer)
@@ -247,8 +250,7 @@
   (LaTeX-mode . electric-pair-mode)
   (LaTeX-mode . olivetti-mode)
   (LaTeX-mode . pdf-loader-install)
-  (LaTeX-mode . LaTeX-math-mode)
-  (LaTeX-mode . display-line-numbers-mode))
+  (LaTeX-mode . LaTeX-math-mode))
 
 (use-package magit
   :ensure t
