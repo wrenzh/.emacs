@@ -3,13 +3,13 @@
 
 (defvar file-name-handler-alist-original file-name-handler-alist)
 (setq gc-cons-threshold most-positive-fixnum
-      gc-cons-percentage 0.02
+      gc-cons-percentage 0.05
       file-name-handler-alist nil
       site-run-file nil)
 (add-hook 'emacs-startup-hook
 	  #'(lambda ()
 	      (setq inhibit-compacting-font-caches t
-		    gc-cons-threshold 120000000
+		    gc-cons-threshold 500000000
 		    file-name-handler-alist file-name-handler-alist-original)))
 
 (require 'package)
@@ -47,17 +47,19 @@
   :config
   (set-face-attribute 'default nil
 		      :family "Fantasque Sans Mono"
-		      :height (if (eq window-system 'ns) 140 120))
-  (defalias 'yes-or-no-p 'y-or-n-p)
+		      :height 120)
+
   (tool-bar-mode 0)
   (menu-bar-mode 0)
   (blink-cursor-mode 0)
   (scroll-bar-mode 0)
   (tooltip-mode 0)
-  (when (eq system-type 'gnu/linux)
-    (setq dired-listing-switches "-alvFh --group-directories-first"))
   (add-to-list 'default-frame-alist (cons 'width 200))
-  (add-to-list 'default-frame-alist (cons 'height 60)))
+  (add-to-list 'default-frame-alist (cons 'height 60))
+  (defalias 'yes-or-no-p 'y-or-n-p)
+  (when (eq system-type 'gnu/linux)
+    (setq dired-listing-switches "-alvFh --group-directories-first")))
+
 
 (use-package mouse
   :ensure nil
@@ -66,6 +68,7 @@
 
 (use-package autorevert
   :ensure nil
+  :defer t
   :custom
   (auto-revert-interval 2)
   (auto-revert-check-vc-info t)
@@ -126,13 +129,7 @@
 
 (use-package gruvbox-theme
   :hook
-  (after-init . (lambda () (load-theme 'gruvbox-light-soft t))))
-
-(use-package exec-path-from-shell
-  :config
-  (setq exec-path-from-shell-check-startup-files nil)
-  (when (memq window-system '(mac ns x))
-    (exec-path-from-shell-initialize)))
+  (after-init . (lambda () (load-theme 'gruvbox-dark-soft t))))
 
 (use-package diminish)
 
@@ -154,6 +151,8 @@
   :hook (ivy-mode . counsel-mode))
 
 (use-package ivy-rich
+  :after ivy
+  :defer 1
   :init
   (ivy-rich-mode 1))
 
@@ -222,6 +221,7 @@
   (key-chord-mode t))
 
 (use-package pdf-tools
+  :defer 2
   :custom
   (pdf-view-use-scaling t))
 
@@ -253,22 +253,16 @@
   (LaTeX-mode . LaTeX-math-mode))
 
 (use-package magit
-  :ensure t
+  :defer 2
   :config
   (evil-leader/set-key "m" 'magit-status))
 
-(use-package evil-magit)
-
-(use-package company
-  :diminish company-mode
-  :hook (prog-mode . company-mode)
-  :custom
-  (company-minimum-prefix-length 2)
-  (company-idle-delay 0.1)
-  (company-selection-wrap-around t)
-  (company-tooltip-align-annotations t))
+(use-package evil-magit
+  :after magit)
 
 (use-package ivy-bibtex
+  :after ivy
+  :defer 1
   :config
   (setq bibtex-completion-bibliography
 	"~/OneDrive/Documents/Bibliography/library.bib")
