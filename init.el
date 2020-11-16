@@ -140,7 +140,7 @@
   (setq enable-recursive-minibuffers t)
   (setq ivy-re-builders-alist '((ivy-bibtex . ivy--regex-ignore-order)
 				(swiper . ivy--regex-plus)
-				(t . ivy--regex-fuzzy)))
+				(t . ivy--regex-plus)))
   :hook (after-init . ivy-mode)
   :bind
   ("C-s" . 'swiper))
