@@ -9,7 +9,7 @@
 (add-hook 'emacs-startup-hook
 	  #'(lambda ()
 	      (setq inhibit-compacting-font-caches t
-		    gc-cons-threshold 500000000
+		    gc-cons-threshold 100000000
 		    file-name-handler-alist file-name-handler-alist-original)))
 
 (require 'package)
@@ -48,7 +48,6 @@
   (set-face-attribute 'default nil
 		      :family "Fantasque Sans Mono"
 		      :height 120)
-
   (tool-bar-mode 0)
   (menu-bar-mode 0)
   (blink-cursor-mode 0)
@@ -59,7 +58,6 @@
   (defalias 'yes-or-no-p 'y-or-n-p)
   (when (eq system-type 'gnu/linux)
     (setq dired-listing-switches "-alvFh --group-directories-first")))
-
 
 (use-package mouse
   :ensure nil
@@ -74,8 +72,7 @@
   (auto-revert-check-vc-info t)
   (global-auto-revert-no-file-buffers t)
   (auto-revert-verbose nil)
-  :config
-  (global-auto-revert-mode t))
+  :config (global-auto-revert-mode t))
 
 (use-package python
   :ensure nil
@@ -86,10 +83,8 @@
 
 (use-package paren
   :ensure nil
-  :init
-  (setq show-paren-delay 0)
-  :config
-  (show-paren-mode t))
+  :init (setq show-paren-delay 0)
+  :config (show-paren-mode t))
 
 (use-package flyspell
   :ensure nil
@@ -128,8 +123,7 @@
 		  (setq recentf-auto-cleanup 60))))
 
 (use-package gruvbox-theme
-  :hook
-  (after-init . (lambda () (load-theme 'gruvbox-dark-soft t))))
+  :hook (after-init . (lambda () (load-theme 'gruvbox t))))
 
 (use-package diminish)
 
@@ -142,8 +136,7 @@
 				(swiper . ivy--regex-plus)
 				(t . ivy--regex-plus)))
   :hook (after-init . ivy-mode)
-  :bind
-  ("C-s" . 'swiper))
+  :bind ("C-s" . 'swiper))
 
 (use-package counsel
   :after ivy
@@ -153,8 +146,7 @@
 (use-package ivy-rich
   :after ivy
   :defer 1
-  :init
-  (ivy-rich-mode 1))
+  :init (ivy-rich-mode 1))
 
 (use-package ivy-posframe
   :diminish ivy-posframe-mode
@@ -173,6 +165,7 @@
   (setq evil-want-keybinding nil)
   (setq evil-undo-system 'undo-fu)
   :config
+  (setq evil-respect-visual-line-mode t)
   (evil-define-key 'normal 'global
     (kbd "j") 'evil-next-visual-line
     (kbd "k") 'evil-previous-visual-line)
@@ -206,12 +199,10 @@
 
 (use-package evil-collection
   :after evil
-  :config
-  (evil-collection-init))
+  :config (evil-collection-init))
 
 (use-package evil-surround
-  :config
-  (global-evil-surround-mode t))
+  :config (global-evil-surround-mode t))
 
 (use-package key-chord
   :config
@@ -219,11 +210,6 @@
    "jk" (lambda () (interactive)
 	  (call-interactively (key-binding (kbd "<escape>")))))
   (key-chord-mode t))
-
-(use-package pdf-tools
-  :defer 2
-  :custom
-  (pdf-view-use-scaling t))
 
 (use-package olivetti
   :diminish olivetti-mode
@@ -240,7 +226,11 @@
   (setq TeX-save-query nil)
   (setq TeX-source-correlate-mode t)
   (setq TeX-source-correlate-method 'synctex)
-  (setq TeX-view-program-selection '((output-pdf "PDF Tools")))
+  (setq TeX-view-program-list
+	     '("Zathura" ("zathura "
+		(mode-io-correlate " --synctex-forward %n:0:%b -x \"emacsclient +%{line} %{input}\" ")
+		" %o") "zathura"))
+  (setq TeX-view-program-selection '((output-pdf "Zathura")))
   (setq bibtex-dialect 'biblatex)
   (setq TeX-source-correlate-start-server t)
   (add-hook 'TeX-after-compilation-finished-functions
@@ -249,7 +239,6 @@
   :hook
   (LaTeX-mode . electric-pair-mode)
   (LaTeX-mode . olivetti-mode)
-  (LaTeX-mode . pdf-loader-install)
   (LaTeX-mode . LaTeX-math-mode))
 
 (use-package magit
@@ -271,8 +260,7 @@
 
 (use-package spice-mode
   :hook (spice-mode . display-line-numbers-mode)
-  :mode
-  ("\\.cir\\'" . spice-mode))
+  :mode ("\\.cir\\'" . spice-mode))
 
 (use-package pyvenv
   :config
@@ -282,5 +270,4 @@
   (evil-leader/set-key-for-mode 'python-mode "f" 'flymake-show-diagnostics-buffer))
 
 (use-package mood-line
-  :config
-  (mood-line-mode))
+  :config (mood-line-mode))
