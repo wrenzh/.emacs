@@ -113,7 +113,8 @@
   :config
   (run-at-time nil 120
 	       '(lambda () (let ((save-silently t)) (recentf-save-list))))
-  (add-to-list 'recentf-exclude (format "%s/\\.config\\/emacs/elpa/.*" (getenv "HOME")))
+  (add-to-list 'recentf-exclude
+	       (format "%s/\\.config\\/emacs/elpa/.*" (getenv "HOME")))
   (add-to-list 'recentf-exclude ".*.synctex.gz")
   (add-to-list 'recentf-exclude "\\*.*\\*")
   :hook
@@ -155,8 +156,8 @@
 	'((t . ivy-posframe-display-at-frame-center)))
   (setq ivy-posframe-parameters
 	'((left-fringe . 10) (right-fringe . 10)))
-  (setq ivy-posframe-min-width 120)
-  (setq ivy-posframe-height-alist '((t . 16)))
+  (setq ivy-posframe-width 80)
+  (setq ivy-posframe-height 6)
   (ivy-posframe-mode t))
 
 (use-package evil
