@@ -3,13 +3,12 @@
 
 (defvar file-name-handler-alist-original file-name-handler-alist)
 (setq gc-cons-threshold most-positive-fixnum
-      gc-cons-percentage 0.05
+      gc-cons-percentage 0.3
       file-name-handler-alist nil
       site-run-file nil)
 (add-hook 'emacs-startup-hook
 	  #'(lambda ()
 	      (setq inhibit-compacting-font-caches t
-		    gc-cons-threshold 100000000
 		    file-name-handler-alist file-name-handler-alist-original)))
 
 (require 'package)
@@ -34,6 +33,9 @@
   (frame-title-format '("%b"))
   (ring-bell-function 'ignore)
   (frame-resize-pixelwise t)
+  (redisplay-dont-pause t)
+  (scroll-margin 1)
+  (scroll-step 1)
   (scroll-conservatively 10000)
   (scroll-preserve-screen-position t)
   (load-prefer-newer t)
@@ -64,16 +66,6 @@
   :custom
   (mouse-wheel-progressive-speed nil))
 
-(use-package autorevert
-  :ensure nil
-  :defer t
-  :custom
-  (auto-revert-interval 2)
-  (auto-revert-check-vc-info t)
-  (global-auto-revert-no-file-buffers t)
-  (auto-revert-verbose nil)
-  :config (global-auto-revert-mode t))
-
 (use-package python
   :ensure nil
   :custom
@@ -95,7 +87,8 @@
 
 (use-package elec-pair
   :ensure nil
-  :hook (elisp-mode . electric-pair-mode))
+  :hook
+  (emacs-lisp-mode . electric-pair-mode))
 
 (use-package whitespace
   :ensure nil
@@ -123,10 +116,19 @@
 		  (recentf-mode t)
 		  (setq recentf-auto-cleanup 60))))
 
-(use-package gruvbox-theme
-  :hook (after-init . (lambda () (load-theme 'gruvbox t))))
+(use-package autorevert
+  :ensure nil
+  :config (global-auto-revert-mode t))
+
+(use-package leuven-theme
+  :hook (after-init . (lambda () (load-theme 'leuven t))))
 
 (use-package diminish)
+
+(use-package gcmh
+  :diminish gcmh-mode
+  :config
+  (gcmh-mode t))
 
 (use-package ivy
   :diminish ivy-mode
@@ -145,19 +147,60 @@
   :hook (ivy-mode . counsel-mode))
 
 (use-package ivy-rich
-  :after ivy
-  :defer 1
-  :init (ivy-rich-mode 1))
+  :after ivy-posframe
+  :config
+  (setq ivy-rich-display-transformers-list
+	'(ivy-switch-buffer
+	  (:columns
+	   ((ivy-switch-buffer-transformer (:width 40))
+	    (ivy-rich-switch-buffer-size (:width 7))
+	    (ivy-rich-switch-buffer-indicators (:width 4 :face error :align right))
+	    (ivy-rich-switch-buffer-major-mode (:width 12 :face warning))
+	    (ivy-rich-switch-buffer-project (:width 15 :face success))
+	    (ivy-rich-switch-buffer-path (:width (lambda (x) (ivy-rich-switch-buffer-shorten-path
+							      x (ivy-rich-minibuffer-width 0.3))))))
+	   :predicate
+	   (lambda (cand) (get-buffer cand)))
+	  counsel-find-file
+	  (:columns
+	   ((ivy-read-file-transformer (:width 40))
+	    (ivy-rich-counsel-find-file-truename (:face font-lock-doc-face))))
+	  counsel-M-x
+	  (:columns
+	   ((counsel-M-x-transformer (:width 30))
+	    (ivy-rich-counsel-function-docstring (:width 40 :face font-lock-doc-face))))
+	  counsel-describe-function
+	  (:columns
+	   ((counsel-describe-function-transformer (:width 40))
+	    (ivy-rich-counsel-function-docstring (:face font-lock-doc-face))))
+	  counsel-describe-variable
+	  (:columns
+	   ((counsel-describe-variable-transformer (:width 40))
+	    (ivy-rich-counsel-variable-docstring (:face font-lock-doc-face))))
+	  counsel-recentf
+	  (:columns
+	   ((ivy-rich-candidate (:width 40))
+	    (ivy-rich-file-last-modified-time (:face font-lock-comment-face))))
+	  package-install
+	  (:columns
+	   ((ivy-rich-candidate (:width 40))
+	    (ivy-rich-package-version (:width 16 :face font-lock-comment-face))
+	    (ivy-rich-package-archive-summary (:width 7 :face font-lock-builtin-face))
+	    (ivy-rich-package-install-summary (:face font-lock-doc-face))))))
+  (ivy-rich-mode 0)
+  (ivy-rich-mode t))
 
 (use-package ivy-posframe
   :diminish ivy-posframe-mode
+  :after ivy
   :config
+  (setq ivy-posframe-height 9)
+  (setq ivy-posframe-width 80)
   (setq ivy-posframe-display-functions-alist
 	'((t . ivy-posframe-display-at-frame-center)))
   (setq ivy-posframe-parameters
-	'((left-fringe . 10) (right-fringe . 10)))
-  (setq ivy-posframe-width 80)
-  (setq ivy-posframe-height 6)
+	'((left-fringe . 10)
+	  (right-fringe . 10)))
   (ivy-posframe-mode t))
 
 (use-package evil
@@ -212,6 +255,26 @@
 	  (call-interactively (key-binding (kbd "<escape>")))))
   (key-chord-mode t))
 
+(use-package company
+  :diminish company-mode
+  :defer 1
+  :config
+  (setq company-idle-delay 0.1)
+  (setq company-minimum-prefix-length 1)
+  :hook
+  (emacs-lisp-mode . (lambda () (company-mode t))))
+
+(use-package yasnippet
+  :diminish yas-mode
+  :defer 1
+  :config
+  (evil-define-key 'insert 'global
+    (kbd "TAB") 'yas-expand)
+  (yas-global-mode t))
+
+(use-package yasnippet-snippets
+  :defer 2)
+
 (use-package olivetti
   :diminish olivetti-mode
   :custom
@@ -247,9 +310,6 @@
   :config
   (evil-leader/set-key "m" 'magit-status))
 
-(use-package evil-magit
-  :after magit)
-
 (use-package ivy-bibtex
   :after ivy
   :defer 1
@@ -269,6 +329,3 @@
   (evil-leader/set-key-for-mode 'python-mode "r" 'pyvenv-restart-python)
   (evil-leader/set-key-for-mode 'python-mode "x" 'python-shell-send-buffer)
   (evil-leader/set-key-for-mode 'python-mode "f" 'flymake-show-diagnostics-buffer))
-
-(use-package mood-line
-  :config (mood-line-mode))
