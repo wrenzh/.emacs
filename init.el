@@ -13,7 +13,6 @@
 
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
-(setq package-enable-at-startup nil)
 (package-initialize)
 
 (unless (package-installed-p 'use-package)
@@ -47,16 +46,6 @@
   (find-file-visit-truename t)
   (inhibit-startup-screen t)
   :config
-  (set-face-attribute 'default nil
-		      :family "Fantasque Sans Mono"
-		      :height 120)
-  (tool-bar-mode 0)
-  (menu-bar-mode 0)
-  (blink-cursor-mode 0)
-  (scroll-bar-mode 0)
-  (tooltip-mode 0)
-  (add-to-list 'default-frame-alist (cons 'width 200))
-  (add-to-list 'default-frame-alist (cons 'height 60))
   (defalias 'yes-or-no-p 'y-or-n-p)
   (when (eq system-type 'gnu/linux)
     (setq dired-listing-switches "-alvFh --group-directories-first")))
@@ -128,6 +117,7 @@
 (use-package gcmh
   :diminish gcmh-mode
   :config
+  (setq gcmh-idle-delay 6)
   (gcmh-mode t))
 
 (use-package ivy
