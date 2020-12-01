@@ -1,9 +1,6 @@
 ;; After emacs-27 early-init.el allows loading graphical settings
 ;; early in the startup stack and therefore speeds up
 
-;; Disable package in startup
-(setq package-enable-at-startup nil)
-
 ;; Visual settings
 (set-face-attribute 'default nil
 		    :family "Fantasque Sans Mono"

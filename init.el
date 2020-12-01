@@ -13,7 +13,6 @@
 
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
-(package-initialize)
 
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
@@ -25,7 +24,6 @@
 (setq custom-file "~/.config/emacs/custom.el")
 (load custom-file 'noerror)
 
-;; File and edit settings
 (use-package emacs
   :custom
   (user-full-name "Wren Zhang")
@@ -33,10 +31,6 @@
   (ring-bell-function 'ignore)
   (frame-resize-pixelwise t)
   (redisplay-dont-pause t)
-  (scroll-margin 1)
-  (scroll-step 1)
-  (scroll-conservatively 10000)
-  (scroll-preserve-screen-position t)
   (load-prefer-newer t)
   (auto-save-default nil)
   (create-lockfiles nil)
@@ -45,6 +39,7 @@
   (confirm-kill-processes nil)
   (find-file-visit-truename t)
   (inhibit-startup-screen t)
+  (fill-column 80)
   :config
   (defalias 'yes-or-no-p 'y-or-n-p)
   (when (eq system-type 'gnu/linux)
@@ -53,6 +48,10 @@
 (use-package mouse
   :ensure nil
   :custom
+  (scroll-margin 1)
+  (scroll-step 1)
+  (scroll-conservatively 10000)
+  (scroll-preserve-screen-position t)
   (mouse-wheel-progressive-speed nil))
 
 (use-package python
@@ -76,8 +75,7 @@
 
 (use-package elec-pair
   :ensure nil
-  :hook
-  (emacs-lisp-mode . electric-pair-mode))
+  :hook (emacs-lisp-mode . electric-pair-mode))
 
 (use-package whitespace
   :ensure nil
@@ -157,7 +155,7 @@
 	    (ivy-rich-counsel-find-file-truename (:face font-lock-doc-face))))
 	  counsel-M-x
 	  (:columns
-	   ((counsel-M-x-transformer (:width 30))
+	   ((counsel-M-x-transformer (:width 40))
 	    (ivy-rich-counsel-function-docstring (:width 40 :face font-lock-doc-face))))
 	  counsel-describe-function
 	  (:columns
