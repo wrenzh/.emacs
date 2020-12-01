@@ -118,6 +118,12 @@
   (setq gcmh-idle-delay 6)
   (gcmh-mode t))
 
+(when (memq window-system '(mac ns x))
+  (use-package exec-path-from-shell
+    :defer 1
+    :config
+    (exec-path-from-shell-initialize)))
+
 (use-package ivy
   :diminish ivy-mode
   :config

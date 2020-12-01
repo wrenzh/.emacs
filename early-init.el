@@ -4,7 +4,7 @@
 ;; Visual settings
 (set-face-attribute 'default nil
 		    :family "Fantasque Sans Mono"
-		    :height 120)
+		    :height 140)
 (tool-bar-mode 0)
 (menu-bar-mode 0)
 (blink-cursor-mode 0)
