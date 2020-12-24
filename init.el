@@ -39,8 +39,9 @@
   (confirm-kill-processes nil)
   (find-file-visit-truename t)
   (inhibit-startup-screen t)
-  (fill-column 80)
+  (fill-column 120)
   :config
+  (blink-cursor-mode 0)
   (defalias 'yes-or-no-p 'y-or-n-p)
   (when (eq system-type 'gnu/linux)
     (setq dired-listing-switches "-alvFh --group-directories-first")))
@@ -107,8 +108,8 @@
   :ensure nil
   :config (global-auto-revert-mode t))
 
-(use-package leuven-theme
-  :hook (after-init . (lambda () (load-theme 'leuven t))))
+(use-package gruvbox-theme
+  :hook (after-init . (lambda () (load-theme 'gruvbox-light-medium t))))
 
 (use-package diminish)
 
@@ -118,7 +119,7 @@
   (setq gcmh-idle-delay 6)
   (gcmh-mode t))
 
-(when (memq window-system '(mac ns x))
+(when (eq window-system 'ns)
   (use-package exec-path-from-shell
     :defer 1
     :config
@@ -188,7 +189,7 @@
   :diminish ivy-posframe-mode
   :after ivy
   :config
-  (setq ivy-posframe-height 9)
+  (setq ivy-posframe-height 10)
   (setq ivy-posframe-width 80)
   (setq ivy-posframe-display-functions-alist
 	'((t . ivy-posframe-display-at-frame-center)))
@@ -319,7 +320,21 @@
 
 (use-package pyvenv
   :config
-  (evil-leader/set-key-for-mode 'python-mode "a" 'pyvenv-activate)
-  (evil-leader/set-key-for-mode 'python-mode "r" 'pyvenv-restart-python)
-  (evil-leader/set-key-for-mode 'python-mode "x" 'python-shell-send-buffer)
-  (evil-leader/set-key-for-mode 'python-mode "f" 'flymake-show-diagnostics-buffer))
+  (evil-leader/set-key-for-mode 'python-mode
+    "a" 'pyvenv-activate
+    "r" 'pyvenv-restart-python
+    "x" 'python-shell-send-buffer
+    "f" 'flymake-show-diagnostics-buffer))
+
+(use-package eglot
+  :hook
+  (python-mode . eglot-ensure))
+(put 'dired-find-alternate-file 'disabled nil)
+
+(use-package doom-modeline
+  :config (setq doom-modeline-icon nil)
+  :hook (after-init . doom-modeline-mode))
+
+(use-package org
+  :config
+  (setq org-agenda-files (list "~/OneDrive/Documents/Notes/Schedule.org")))
