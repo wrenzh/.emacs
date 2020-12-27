@@ -25,6 +25,7 @@
 (load custom-file 'noerror)
 
 (use-package emacs
+  :ensure nil
   :custom
   (user-full-name "Wren Zhang")
   (frame-title-format '("%b"))
@@ -109,7 +110,7 @@
   :config (global-auto-revert-mode t))
 
 (use-package gruvbox-theme
-  :hook (after-init . (lambda () (load-theme 'gruvbox-light-medium t))))
+  :hook (after-init . (lambda () (load-theme 'gruvbox-dark-hard t))))
 
 (use-package diminish)
 
@@ -186,6 +187,7 @@
   (ivy-rich-mode t))
 
 (use-package ivy-posframe
+  :if window-system
   :diminish ivy-posframe-mode
   :after ivy
   :config
@@ -233,7 +235,8 @@
     "j" 'evil-window-down
     "k" 'evil-window-up
     "l" 'evil-window-right
-    "o" 'other-window)
+    "o" 'other-window
+    "Q" 'kill-emacs)
   (evil-leader/set-key-for-mode 'emacs-lisp-mode "x" 'eval-last-sexp))
 
 (use-package evil-collection
@@ -338,3 +341,7 @@
 (use-package org
   :config
   (setq org-agenda-files (list "~/OneDrive/Documents/Notes/Schedule.org")))
+
+(use-package vterm
+  :config
+  (evil-leader/set-key "v" 'vterm))
