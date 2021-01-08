@@ -10,4 +10,4 @@
 (tooltip-mode 0)
 (tool-bar-mode 0)
 (add-to-list 'default-frame-alist (cons 'width 120))
-(add-to-list 'default-frame-alist (cons 'height 40))
+(add-to-list 'default-frame-alist (cons 'height 60))

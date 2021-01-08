@@ -1,6 +1,7 @@
 ;;;; init.el --- Emacs init file
-;; Author: Wren Zhang
+;; Author: Wren Zhang (wren.zh@gmail.com)
 
+;; Avoid garbage collection during startup
 (defvar file-name-handler-alist-original file-name-handler-alist)
 (setq gc-cons-threshold most-positive-fixnum
       gc-cons-percentage 0.3
@@ -11,9 +12,9 @@
 	      (setq inhibit-compacting-font-caches t
 		    file-name-handler-alist file-name-handler-alist-original)))
 
+;; Load package.el and initialize use-package
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
-
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
@@ -21,9 +22,12 @@
   (setq use-package-always-ensure t
 	use-package-expand-minimally t))
 
+;; Avoid custom to auto-generate in init.el
 (setq custom-file "~/.config/emacs/custom.el")
 (load custom-file 'noerror)
 
+;; Basic graphical and usage configurations
+;; Note some graphical settings are in early-init.el
 (use-package emacs
   :ensure nil
   :custom
@@ -68,6 +72,7 @@
   :init (setq show-paren-delay 0)
   :config (show-paren-mode t))
 
+;; Spell checker with hunspell and flyspell
 (use-package flyspell
   :ensure nil
   :custom
@@ -83,6 +88,7 @@
   :ensure nil
   :hook (before-save . whitespace-cleanup))
 
+;; Display line numbers in prog-mode
 (use-package display-line-numbers
   :ensure nil
   :hook (prog-mode . display-line-numbers-mode)
@@ -97,6 +103,7 @@
 	       '(lambda () (let ((save-silently t)) (recentf-save-list))))
   (add-to-list 'recentf-exclude
 	       (format "%s/\\.config\\/emacs/elpa/.*" (getenv "HOME")))
+  (add-to-list 'recentf-exclude "recentf")
   (add-to-list 'recentf-exclude ".*.synctex.gz")
   (add-to-list 'recentf-exclude "\\*.*\\*")
   :hook
@@ -105,9 +112,15 @@
 		  (recentf-mode t)
 		  (setq recentf-auto-cleanup 60))))
 
+;; Automatically revert buffer when changed
 (use-package autorevert
   :ensure nil
   :config (global-auto-revert-mode t))
+
+(use-package subword
+  :ensure nil
+  :diminish subword-mode
+  :hook (after-init . global-subword-mode))
 
 (use-package gruvbox-theme
   :hook (after-init . (lambda () (load-theme 'gruvbox t))))
@@ -120,6 +133,7 @@
   (setq gcmh-idle-delay 6)
   (gcmh-mode t))
 
+;; On macOS system the path is not inherited from shell
 (when (eq window-system 'ns)
   (use-package exec-path-from-shell
     :defer 1
@@ -145,20 +159,23 @@
 (use-package ivy-rich
   :after ivy-posframe
   :config
+  (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line)
   (ivy-rich-mode t))
 
 (use-package ivy-posframe
   :diminish ivy-posframe-mode
   :after ivy
   :config
-  (setq ivy-posframe-height 12)
-  (setq ivy-posframe-width 80)
-  (setq ivy-posframe-display-functions-alist
-	'((t . ivy-posframe-display-at-frame-top-center)))
-  (setq ivy-posframe-parameters
+  (ivy-posframe-mode t)
+  (setq ivy-posframe-height 10
+	ivy-posframe-min-height 10
+	ivy-posframe-width 80
+	ivy-posframe-min-width 80
+	ivy-posframe-display-functions-alist
+	'((t . ivy-posframe-display-at-frame-center))
+	ivy-posframe-parameters
 	'((left-fringe . 10)
-	  (right-fringe . 10)))
-  (ivy-posframe-mode t))
+	  (right-fringe . 10))))
 
 (use-package evil
   :init
@@ -166,13 +183,7 @@
   (setq evil-want-keybinding nil)
   (setq evil-undo-system 'undo-fu)
   :config
-  (setq evil-respect-visual-line-mode t)
-  (evil-define-key 'normal 'global
-    (kbd "j") 'evil-next-visual-line
-    (kbd "k") 'evil-previous-visual-line)
-  (evil-define-key 'visual 'global
-    (kbd "j") 'evil-next-visual-line
-    (kbd "k") 'evil-previous-visual-line))
+  (setq evil-respect-visual-line-mode t))
 
 (use-package undo-fu)
 
@@ -224,7 +235,7 @@
   (emacs-lisp-mode . (lambda () (company-mode t))))
 
 (use-package yasnippet
-  :diminish yas-mode
+  :diminish yasnippet-mode
   :defer 1
   :config
   (evil-define-key 'insert 'global
@@ -294,25 +305,46 @@
   :hook
   (python-mode . eglot-ensure))
 
-(use-package doom-modeline
-  :config
-  (setq doom-modeline-icon t)
-  (setq doom-modeline-height 30)
-  :hook (after-init . doom-modeline-mode))
-
 (use-package org
   :config
   (setq org-agenda-files (list "~/OneDrive/Documents/Notes/Schedule.org"))
+  (evil-leader/set-key "g" 'org-icalendar-export-to-ics)
   :hook (org-mode . olivetti-mode))
 
 (use-package vterm
-  :config
+  :init
   (setq vterm-always-compile-module t)
+  :config
   (evil-leader/set-key "v" 'vterm))
 
 (use-package all-the-icons
-  :config (setq all-the-icons-scale-factor 1.1))
+  :config (setq all-the-icons-scale-factor 1.0))
 
 (use-package all-the-icons-ivy-rich
   :after ivy-rich
   :config (all-the-icons-ivy-rich-mode))
+
+(use-package powerline
+  :hook (after-init . powerline-default-theme))
+
+(use-package centaur-tabs
+  :config
+  (setq centaur-tabs-set-icons t)
+  (setq centaur-tabs-set-bar 'over)
+  (setq centaur-tabs-set-modified-marker t)
+  (setq centaur-tabs-cycle-scope 'tabs)
+  (centaur-tabs-change-fonts "TeX Gyre Heros" 100)
+  (centaur-tabs-headline-match)
+  :bind
+  (:map evil-normal-state-map
+	("g t" . centaur-tabs-forward)
+	("g T" . centaur-tabs-backward))
+  :hook
+  (dired-mode . centaur-tabs-local-mode)
+  (helpful-mode . centaur-tabs-local-mode)
+  (help-mode . centaur-tabs-local-mode)
+  (org-agenda-mode . centaur-tabs-local-mode)
+  (calendar-mode . centaur-tabs-local-mode)
+  (term-mode . centaur-tabs-local-mode)
+  (vterm-mode . centaur-tabs-local-mode)
+  (after-init . (lambda () (centaur-tabs-mode t))))
