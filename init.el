@@ -32,7 +32,7 @@
   :ensure nil
   :custom
   (user-full-name "Wren Zhang")
-  (frame-title-format '("%b"))
+  (frame-title-format '("Emacs"))
   (ring-bell-function 'ignore)
   (frame-resize-pixelwise t)
   (redisplay-dont-pause t)
@@ -157,25 +157,23 @@
   :hook (ivy-mode . counsel-mode))
 
 (use-package ivy-rich
-  :after ivy-posframe
-  :config
-  (setcdr (assq t ivy-format-functions-alist) #'ivy-format-function-line)
-  (ivy-rich-mode t))
+  ;; :after ivy-posframe
+  :config (ivy-rich-mode t))
 
-(use-package ivy-posframe
-  :diminish ivy-posframe-mode
-  :after ivy
-  :config
-  (ivy-posframe-mode t)
-  (setq ivy-posframe-height 10
-	ivy-posframe-min-height 10
-	ivy-posframe-width 80
-	ivy-posframe-min-width 80
-	ivy-posframe-display-functions-alist
-	'((t . ivy-posframe-display-at-frame-center))
-	ivy-posframe-parameters
-	'((left-fringe . 10)
-	  (right-fringe . 10))))
+;; (use-package ivy-posframe
+;;   :diminish ivy-posframe-mode
+;;   :after ivy
+;;   :config
+;;   (ivy-posframe-mode t)
+;;   (setq ivy-posframe-height 10
+;;	ivy-posframe-min-height 10
+;;	ivy-posframe-width 80
+;;	ivy-posframe-min-width 80
+;;	ivy-posframe-display-functions-alist
+;;	'((t . ivy-posframe-display-at-frame-center))
+;;	ivy-posframe-parameters
+;;	'((left-fringe . 10)
+;;	  (right-fringe . 10))))
 
 (use-package evil
   :init
@@ -183,7 +181,10 @@
   (setq evil-want-keybinding nil)
   (setq evil-undo-system 'undo-fu)
   :config
-  (setq evil-respect-visual-line-mode t))
+  (setq evil-respect-visual-line-mode t)
+  (evil-define-key '(normal visual) 'global
+    "j" 'evil-next-visual-line
+    "k" 'evil-previous-visual-line))
 
 (use-package undo-fu)
 
@@ -325,7 +326,7 @@
   :config (all-the-icons-ivy-rich-mode))
 
 (use-package powerline
-  :hook (after-init . powerline-default-theme))
+  :hook (after-init . powerline-center-evil-theme))
 
 (use-package centaur-tabs
   :config
@@ -348,3 +349,11 @@
   (term-mode . centaur-tabs-local-mode)
   (vterm-mode . centaur-tabs-local-mode)
   (after-init . (lambda () (centaur-tabs-mode t))))
+
+(use-package neotree
+  :config
+  (setq neo-theme 'icons
+	neo-window-width 30)
+  (evil-leader/set-key "t" 'neotree-toggle)
+  (evil-define-key 'normal neotree-mode-map (kbd "o")
+    'neotree-open-file-in-system-application))
