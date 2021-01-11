@@ -157,23 +157,23 @@
   :hook (ivy-mode . counsel-mode))
 
 (use-package ivy-rich
-  ;; :after ivy-posframe
+  :after ivy-posframe
   :config (ivy-rich-mode t))
 
-;; (use-package ivy-posframe
-;;   :diminish ivy-posframe-mode
-;;   :after ivy
-;;   :config
-;;   (ivy-posframe-mode t)
-;;   (setq ivy-posframe-height 10
-;;	ivy-posframe-min-height 10
-;;	ivy-posframe-width 80
-;;	ivy-posframe-min-width 80
-;;	ivy-posframe-display-functions-alist
-;;	'((t . ivy-posframe-display-at-frame-center))
-;;	ivy-posframe-parameters
-;;	'((left-fringe . 10)
-;;	  (right-fringe . 10))))
+(use-package ivy-posframe
+  :diminish ivy-posframe-mode
+  :after ivy
+  :config
+  (ivy-posframe-mode t)
+  (setq ivy-posframe-height 10
+	ivy-posframe-min-height 10
+	ivy-posframe-width 80
+	ivy-posframe-min-width 80
+	ivy-posframe-display-functions-alist
+	'((t . ivy-posframe-display-at-frame-center))
+	ivy-posframe-parameters
+	'((left-fringe . 10)
+	  (right-fringe . 10))))
 
 (use-package evil
   :init
