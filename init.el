@@ -106,6 +106,7 @@
   (add-to-list 'recentf-exclude "recentf")
   (add-to-list 'recentf-exclude ".*.synctex.gz")
   (add-to-list 'recentf-exclude "\\*.*\\*")
+  (add-to-list 'recentf-exclude ".*~")
   :hook
   (after-init . (lambda ()
 		  (setq recentf-auto-cleanup 'never)
@@ -123,14 +124,14 @@
   :hook (after-init . global-subword-mode))
 
 (use-package gruvbox-theme
-  :hook (after-init . (lambda () (load-theme 'gruvbox t))))
+  :hook (after-init . (lambda () (load-theme 'gruvbox-dark-soft t))))
 
 (use-package diminish)
 
 (use-package gcmh
   :diminish gcmh-mode
   :config
-  (setq gcmh-idle-delay 6)
+  (setq gcmh-idle-delay 10)
   (gcmh-mode t))
 
 ;; On macOS system the path is not inherited from shell
@@ -156,17 +157,13 @@
   :diminish counsel-mode
   :hook (ivy-mode . counsel-mode))
 
-(use-package ivy-rich
-  :after ivy-posframe
-  :config (ivy-rich-mode t))
-
 (use-package ivy-posframe
   :diminish ivy-posframe-mode
   :after ivy
   :config
   (ivy-posframe-mode t)
-  (setq ivy-posframe-height 10
-	ivy-posframe-min-height 10
+  (setq ivy-posframe-height 11
+	ivy-posframe-min-height 11
 	ivy-posframe-width 80
 	ivy-posframe-min-width 80
 	ivy-posframe-display-functions-alist
@@ -274,7 +271,8 @@
   :hook
   (LaTeX-mode . electric-pair-mode)
   (LaTeX-mode . olivetti-mode)
-  (LaTeX-mode . LaTeX-math-mode))
+  (LaTeX-mode . LaTeX-math-mode)
+  (LaTeX-mode . save-place-mode))
 
 (use-package magit
   :defer 2
@@ -321,10 +319,6 @@
 (use-package all-the-icons
   :config (setq all-the-icons-scale-factor 1.0))
 
-(use-package all-the-icons-ivy-rich
-  :after ivy-rich
-  :config (all-the-icons-ivy-rich-mode))
-
 (use-package powerline
   :hook (after-init . powerline-center-evil-theme))
 
@@ -334,7 +328,7 @@
   (setq centaur-tabs-set-bar 'over)
   (setq centaur-tabs-set-modified-marker t)
   (setq centaur-tabs-cycle-scope 'tabs)
-  (centaur-tabs-change-fonts "TeX Gyre Heros" 100)
+  (centaur-tabs-change-fonts "TeX Gyre Heros" 120)
   (centaur-tabs-headline-match)
   :bind
   (:map evil-normal-state-map
@@ -348,6 +342,7 @@
   (calendar-mode . centaur-tabs-local-mode)
   (term-mode . centaur-tabs-local-mode)
   (vterm-mode . centaur-tabs-local-mode)
+  (fundamental-mode . centaur-tabs-local-mode)
   (after-init . (lambda () (centaur-tabs-mode t))))
 
 (use-package neotree
