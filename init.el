@@ -124,7 +124,7 @@
   :hook (after-init . global-subword-mode))
 
 (use-package gruvbox-theme
-  :hook (after-init . (lambda () (load-theme 'gruvbox-dark-soft t))))
+  :hook (after-init . (lambda () (load-theme 'gruvbox-dark-medium t))))
 
 (use-package diminish)
 
@@ -210,6 +210,7 @@
   (evil-leader/set-key-for-mode 'emacs-lisp-mode "x" 'eval-last-sexp))
 
 (use-package evil-collection
+  :diminish evil-collection-unimpaired-mode
   :after evil
   :config (evil-collection-init))
 
@@ -233,7 +234,7 @@
   (emacs-lisp-mode . (lambda () (company-mode t))))
 
 (use-package yasnippet
-  :diminish yasnippet-mode
+  :diminish yas-minor-mode
   :defer 1
   :config
   (evil-define-key 'insert 'global
@@ -317,20 +318,22 @@
   (evil-leader/set-key "v" 'vterm))
 
 (use-package all-the-icons
+  :defer 1
   :config (setq all-the-icons-scale-factor 1.0))
 
-(use-package powerline
-  :hook (after-init . powerline-center-evil-theme))
-
 (use-package centaur-tabs
+  :defer 1
   :config
+  (setq centaur-tabs-height 28)
   (setq centaur-tabs-set-icons t)
-  (setq centaur-tabs-set-bar 'over)
+  (setq centaur-tabs-set-bar 'top)
   (setq centaur-tabs-set-modified-marker t)
   (setq centaur-tabs-cycle-scope 'tabs)
-  (centaur-tabs-change-fonts "TeX Gyre Heros" 120)
+  (centaur-tabs-change-fonts "TeX Gyre Heros" 130)
   (centaur-tabs-headline-match)
+  (centaur-tabs-mode t)
   :bind
+  ("C-<tab>" . centaur-tabs-forwrad)
   (:map evil-normal-state-map
 	("g t" . centaur-tabs-forward)
 	("g T" . centaur-tabs-backward))
@@ -342,8 +345,7 @@
   (calendar-mode . centaur-tabs-local-mode)
   (term-mode . centaur-tabs-local-mode)
   (vterm-mode . centaur-tabs-local-mode)
-  (fundamental-mode . centaur-tabs-local-mode)
-  (after-init . (lambda () (centaur-tabs-mode t))))
+  (fundamental-mode . centaur-tabs-local-mode))
 
 (use-package neotree
   :config
@@ -352,3 +354,9 @@
   (evil-leader/set-key "t" 'neotree-toggle)
   (evil-define-key 'normal neotree-mode-map (kbd "o")
     'neotree-open-file-in-system-application))
+
+(use-package powerline
+  :config
+  (setq powerline-default-separator 'slant
+	powerline-height 24)
+  (powerline-center-evil-theme))
