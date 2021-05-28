@@ -326,10 +326,10 @@
   :config
   (setq centaur-tabs-height 28)
   (setq centaur-tabs-set-icons t)
-  (setq centaur-tabs-set-bar 'top)
+  (setq centaur-tabs-set-bar 'over)
   (setq centaur-tabs-set-modified-marker t)
   (setq centaur-tabs-cycle-scope 'tabs)
-  (centaur-tabs-change-fonts "TeX Gyre Heros" 130)
+  (centaur-tabs-change-fonts "Iosevka Bold" 120)
   (centaur-tabs-headline-match)
   (centaur-tabs-mode t)
   :bind
