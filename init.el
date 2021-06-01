@@ -144,9 +144,10 @@
 (use-package ivy
   :diminish ivy-mode
   :config
-  (setq ivy-use-virtual-buffers t)
-  (setq enable-recursive-minibuffers t)
-  (setq ivy-re-builders-alist '((ivy-bibtex . ivy--regex-ignore-order)
+  (setq ivy-use-virtual-buffers t
+	enable-recursive-minibuffers t
+	ivy-use-selectable-prompt t
+	ivy-re-builders-alist '((ivy-bibtex . ivy--regex-ignore-order)
 				(swiper . ivy--regex-plus)
 				(t . ivy--regex-plus)))
   :hook (after-init . ivy-mode)
@@ -207,7 +208,8 @@
     "l" 'evil-window-right
     "o" 'other-window
     "Q" 'kill-emacs)
-  (evil-leader/set-key-for-mode 'emacs-lisp-mode "x" 'eval-last-sexp))
+  (evil-leader/set-key-for-mode 'emacs-lisp-mode
+    "x" 'eval-last-sexp))
 
 (use-package evil-collection
   :diminish evil-collection-unimpaired-mode
@@ -226,7 +228,6 @@
 
 (use-package company
   :diminish company-mode
-  :defer 1
   :config
   (setq company-idle-delay 0.1)
   (setq company-minimum-prefix-length 2)
@@ -253,21 +254,15 @@
 (use-package latex
   :ensure auctex
   :config
-  (setq TeX-auto-save t)
-  (setq TeX-parse-self t)
-  (setq TeX-PDF-mode t)
-  (setq TeX-save-query nil)
-  (setq TeX-source-correlate-mode t)
-  (setq TeX-source-correlate-method 'synctex)
-  (setq TeX-view-program-list
-	     '("Zathura" ("zathura "
-		(mode-io-correlate " --synctex-forward %n:0:%b -x \"emacsclient +%{line} %{input}\" ")
-		" %o") "zathura"))
-  (setq TeX-view-program-selection '((output-pdf "Zathura")))
-  (setq bibtex-dialect 'biblatex)
-  (setq TeX-source-correlate-start-server t)
-  (add-hook 'TeX-after-compilation-finished-functions
-	    #'TeX-revert-document-buffer)
+  (setq TeX-auto-save t
+	TeX-parse-self t
+	TeX-save-query nil
+	TeX-source-correlate-mode t
+	TeX-source-correlate-method 'synctex
+	TeX-view-program-selection '((output-pdf "PDF Tools"))
+	bibtex-dialect 'biblatex
+	TeX-source-correlate-start-server t)
+  (add-hook 'TeX-after-compilation-finished-functions #'TeX-revert-document-buffer)
   (evil-leader/set-key-for-mode 'latex-mode "w" 'TeX-command-run-all)
   :hook
   (LaTeX-mode . electric-pair-mode)
@@ -276,7 +271,7 @@
   (LaTeX-mode . save-place-mode))
 
 (use-package magit
-  :defer 2
+  :defer 1
   :config
   (evil-leader/set-key "m" 'magit-status))
 
@@ -302,20 +297,14 @@
     "f" 'flymake-show-diagnostics-buffer))
 
 (use-package eglot
-  :hook
-  (python-mode . eglot-ensure))
+  :hook (python-mode . eglot-ensure))
 
 (use-package org
-  :config
-  (setq org-agenda-files (list "~/OneDrive/Documents/Notes/Schedule.org"))
-  (evil-leader/set-key "g" 'org-icalendar-export-to-ics)
   :hook (org-mode . olivetti-mode))
 
 (use-package vterm
-  :init
-  (setq vterm-always-compile-module t)
-  :config
-  (evil-leader/set-key "v" 'vterm))
+  :init (setq vterm-always-compile-module t)
+  :config (evil-leader/set-key "v" 'vterm))
 
 (use-package all-the-icons
   :defer 1
@@ -324,16 +313,15 @@
 (use-package centaur-tabs
   :defer 1
   :config
-  (setq centaur-tabs-height 28)
-  (setq centaur-tabs-set-icons t)
-  (setq centaur-tabs-set-bar 'over)
-  (setq centaur-tabs-set-modified-marker t)
-  (setq centaur-tabs-cycle-scope 'tabs)
+  (centaur-tabs-mode t)
   (centaur-tabs-change-fonts "Iosevka Bold" 120)
   (centaur-tabs-headline-match)
-  (centaur-tabs-mode t)
+  (setq centaur-tabs-height 28
+	centaur-tabs-set-icons t
+	centaur-tabs-set-bar 'over
+	centaur-tabs-set-modified-marker t
+	centaur-tabs-cycle-scope 'tabs)
   :bind
-  ("C-<tab>" . centaur-tabs-forwrad)
   (:map evil-normal-state-map
 	("g t" . centaur-tabs-forward)
 	("g T" . centaur-tabs-backward))

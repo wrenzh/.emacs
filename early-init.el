@@ -9,5 +9,6 @@
 (scroll-bar-mode 0)
 (tooltip-mode 0)
 (tool-bar-mode 0)
+(fringe-mode 0)
 (add-to-list 'default-frame-alist (cons 'width 120))
 (add-to-list 'default-frame-alist (cons 'height 60))
