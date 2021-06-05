@@ -69,8 +69,9 @@
 
 (use-package paren
   :ensure nil
-  :init (setq show-paren-delay 0)
-  :config (show-paren-mode t))
+  :config
+  (setq show-paren-delay 0)
+  (show-paren-mode t))
 
 ;; Spell checker with hunspell and flyspell
 (use-package flyspell
@@ -130,9 +131,7 @@
 
 (use-package gcmh
   :diminish gcmh-mode
-  :config
-  (setq gcmh-idle-delay 10)
-  (gcmh-mode t))
+  :config (gcmh-mode t))
 
 ;; On macOS system the path is not inherited from shell
 (when (eq window-system 'ns)
@@ -173,6 +172,8 @@
 	'((left-fringe . 10)
 	  (right-fringe . 10))))
 
+(use-package undo-fu)
+
 (use-package evil
   :init
   (setq evil-want-integration t)
@@ -183,8 +184,6 @@
   (evil-define-key '(normal visual) 'global
     "j" 'evil-next-visual-line
     "k" 'evil-previous-visual-line))
-
-(use-package undo-fu)
 
 (use-package evil-leader
   :config
@@ -233,32 +232,19 @@
 	company-minimum-prefix-length 2
 	company-backends '(company-capf company-yasnippet company-files company-dabbrev-code))
   :hook
-  (emacs-lisp-mode . (lambda () (company-mode t)))
-  (python-mode . (lambda () (company-mode t))))
-
-(use-package company-quickhelp
-  :diminish company-quickhelp-mode
-  :config (setq company-quickhelp-delay 0.5)
-  :hook
-  (emacs-lisp-mode . (lambda () (company-quickhelp-local-mode)))
-  (python-mode . (lambda () (company-quickhelp-local-mode))))
+  (emacs-lisp-mode . company-mode)
+  (python-mode . company-mode))
 
 (use-package yasnippet
   :diminish yas-minor-mode
-  :defer 1
-  :config
-  (evil-define-key 'insert 'global
-    (kbd "TAB") 'yas-expand)
-  (yas-global-mode t))
+  :config (yas-global-mode t))
 
 (use-package yasnippet-snippets
-  :defer 2)
+  :defer 0.5)
 
 (use-package olivetti
   :diminish olivetti-mode
-  :custom
-  (olivetti--visual-line-mode t)
-  (olivetti-body-width 80))
+  :custom (olivetti-body-width 80))
 
 (use-package pdf-tools
   :init (pdf-loader-install))
@@ -278,18 +264,18 @@
   (evil-leader/set-key-for-mode 'latex-mode "w" 'TeX-command-run-all)
   :hook
   (LaTeX-mode . electric-pair-mode)
+  (LaTex-mode . company-mode)
   (LaTeX-mode . olivetti-mode)
   (LaTeX-mode . LaTeX-math-mode)
   (LaTeX-mode . save-place-mode))
 
 (use-package magit
-  :defer 1
+  :defer 0.5
   :config
   (evil-leader/set-key "m" 'magit-status))
 
 (use-package ivy-bibtex
   :after ivy
-  :defer 1
   :config
   (setq bibtex-completion-bibliography
 	"~/OneDrive/Documents/Bibliography/library.bib")
@@ -311,6 +297,10 @@
 (use-package eglot
   :hook (python-mode . eglot-ensure))
 
+(use-package eldoc-box
+  :diminish eldoc-box-hover
+  :hook (eglot--managed-mode . (lambda () (eldoc-box-hover-at-point-mode t))))
+
 (use-package org
   :hook (org-mode . olivetti-mode))
 
@@ -319,11 +309,10 @@
   :config (evil-leader/set-key "v" 'vterm))
 
 (use-package all-the-icons
-  :defer 1
   :config (setq all-the-icons-scale-factor 1.0))
 
 (use-package centaur-tabs
-  :defer 1
+  :defer 0.5
   :config
   (setq centaur-tabs-height 28
 	centaur-tabs-set-icons t
@@ -359,5 +348,5 @@
 (use-package powerline
   :config
   (setq powerline-default-separator 'slant
-	powerline-height 24)
+	powerline-height 28)
   (powerline-center-evil-theme))
