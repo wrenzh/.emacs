@@ -163,8 +163,8 @@
   :after ivy
   :config
   (ivy-posframe-mode t)
-  (setq ivy-posframe-height 11
-	ivy-posframe-min-height 11
+  (setq ivy-posframe-height 10
+	ivy-posframe-min-height 10
 	ivy-posframe-width 80
 	ivy-posframe-min-width 80
 	ivy-posframe-display-functions-alist
@@ -229,10 +229,19 @@
 (use-package company
   :diminish company-mode
   :config
-  (setq company-idle-delay 0.1)
-  (setq company-minimum-prefix-length 2)
+  (setq company-idle-delay 0.1
+	company-minimum-prefix-length 2
+	company-backends '(company-capf company-yasnippet company-files company-dabbrev-code))
   :hook
-  (emacs-lisp-mode . (lambda () (company-mode t))))
+  (emacs-lisp-mode . (lambda () (company-mode t)))
+  (python-mode . (lambda () (company-mode t))))
+
+(use-package company-quickhelp
+  :diminish company-quickhelp-mode
+  :config (setq company-quickhelp-delay 0.5)
+  :hook
+  (emacs-lisp-mode . (lambda () (company-quickhelp-local-mode)))
+  (python-mode . (lambda () (company-quickhelp-local-mode))))
 
 (use-package yasnippet
   :diminish yas-minor-mode
@@ -250,6 +259,9 @@
   :custom
   (olivetti--visual-line-mode t)
   (olivetti-body-width 80))
+
+(use-package pdf-tools
+  :init (pdf-loader-install))
 
 (use-package latex
   :ensure auctex
@@ -313,14 +325,15 @@
 (use-package centaur-tabs
   :defer 1
   :config
-  (centaur-tabs-mode t)
-  (centaur-tabs-change-fonts "Iosevka Bold" 120)
-  (centaur-tabs-headline-match)
   (setq centaur-tabs-height 28
 	centaur-tabs-set-icons t
 	centaur-tabs-set-bar 'over
 	centaur-tabs-set-modified-marker t
+	x-underline-at-descent-line t
 	centaur-tabs-cycle-scope 'tabs)
+  (centaur-tabs-headline-match)
+  (centaur-tabs-change-fonts "Iosevka Bold" 120)
+  (centaur-tabs-mode t)
   :bind
   (:map evil-normal-state-map
 	("g t" . centaur-tabs-forward)
