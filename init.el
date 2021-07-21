@@ -22,12 +22,16 @@
   (setq use-package-always-ensure t
 	use-package-expand-minimally t))
 
+;; Find platform-independent config file location
+(defvar config-directory (file-name-directory user-init-file))
+
 ;; Avoid custom to auto-generate in init.el
-(setq custom-file "~/.config/emacs/custom.el")
+(setq custom-file (concat config-directory "custom.el"))
 (load custom-file 'noerror)
 
 ;; Basic graphical and usage configurations
 ;; Note some graphical settings are in early-init.el
+(file-name-directory user-init-file)
 (use-package emacs
   :ensure nil
   :custom
@@ -39,7 +43,7 @@
   (load-prefer-newer t)
   (auto-save-default nil)
   (create-lockfiles nil)
-  (backup-directory-alist `(("." . "~/.config/emacs/backups/")))
+  (backup-directory-alist (list (cons "." (concat config-directory "backup/"))))
   (backup-by-copying t)
   (confirm-kill-processes nil)
   (find-file-visit-truename t)
@@ -78,7 +82,7 @@
   :ensure nil
   :custom
   (ispell-program-name "hunspell")
-  (ispell-personal-dictionary "~/.config/emacs/dictionary")
+  (ispell-personal-directory (concat config-directory "dictionary/"))
   :hook (text-mode . flyspell-mode))
 
 (use-package elec-pair
@@ -102,8 +106,7 @@
   :config
   (run-at-time nil 120
 	       '(lambda () (let ((save-silently t)) (recentf-save-list))))
-  (add-to-list 'recentf-exclude
-	       (format "%s/\\.config\\/emacs/elpa/.*" (getenv "HOME")))
+  (add-to-list 'recentf-exclude (concat config-directory "elpa/.*"))
   (add-to-list 'recentf-exclude "recentf")
   (add-to-list 'recentf-exclude ".*.synctex.gz")
   (add-to-list 'recentf-exclude "\\*.*\\*")
@@ -321,7 +324,7 @@
 	x-underline-at-descent-line t
 	centaur-tabs-cycle-scope 'tabs)
   (centaur-tabs-headline-match)
-  (centaur-tabs-change-fonts "Iosevka Bold" 120)
+  (centaur-tabs-change-fonts "Iosevka Heavy" 120)
   (centaur-tabs-mode t)
   :bind
   (:map evil-normal-state-map
