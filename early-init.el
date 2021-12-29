@@ -3,7 +3,7 @@
 
 ;; Visual settings
 (set-face-attribute 'default nil
-		    :family "Iosevka"
+		    :family "Anonymous Pro"
 		    :height (if (eq window-system 'ns) 140 120))
 (menu-bar-mode 0)
 (scroll-bar-mode 0)

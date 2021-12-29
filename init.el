@@ -25,13 +25,12 @@
 ;; Find platform-independent config file location
 (defvar config-directory (file-name-directory user-init-file))
 
-;; Avoid custom to auto-generate in init.el
+;; Avoid custom.el to auto-generate in init.el
 (setq custom-file (concat config-directory "custom.el"))
 (load custom-file 'noerror)
 
 ;; Basic graphical and usage configurations
 ;; Note some graphical settings are in early-init.el
-(file-name-directory user-init-file)
 (use-package emacs
   :ensure nil
   :custom
@@ -89,6 +88,7 @@
   :ensure nil
   :hook (emacs-lisp-mode . electric-pair-mode))
 
+;; Cleanup whitespaces when saving
 (use-package whitespace
   :ensure nil
   :hook (before-save . whitespace-cleanup))
@@ -169,11 +169,8 @@
 	ivy-posframe-min-height 10
 	ivy-posframe-width 80
 	ivy-posframe-min-width 80
-	ivy-posframe-display-functions-alist
-	'((t . ivy-posframe-display-at-frame-center))
-	ivy-posframe-parameters
-	'((left-fringe . 10)
-	  (right-fringe . 10))))
+	ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-frame-center))
+	ivy-posframe-parameters '((left-fringe . 10) (right-fringe . 10))))
 
 (use-package undo-fu)
 
@@ -209,6 +206,7 @@
     "k" 'evil-window-up
     "l" 'evil-window-right
     "o" 'other-window
+    "u" 'list-packages
     "Q" 'kill-emacs)
   (evil-leader/set-key-for-mode 'emacs-lisp-mode
     "x" 'eval-last-sexp))
@@ -281,7 +279,7 @@
   :after ivy
   :config
   (setq bibtex-completion-bibliography
-	"~/OneDrive/Documents/Bibliography/library.bib")
+	"~/iCloud/Documents/Bibliography/library.bib")
   (setq ivy-bibtex-default-action 'ivy-bibtex-insert-citation)
   (evil-define-key 'insert LaTeX-mode-map (kbd "M-i") 'ivy-bibtex))
 
@@ -311,45 +309,9 @@
   :init (setq vterm-always-compile-module t)
   :config (evil-leader/set-key "v" 'vterm))
 
-(use-package all-the-icons
-  :config (setq all-the-icons-scale-factor 1.0))
-
-(use-package centaur-tabs
-  :defer 0.5
-  :config
-  (setq centaur-tabs-height 28
-	centaur-tabs-set-icons t
-	centaur-tabs-set-bar 'over
-	centaur-tabs-set-modified-marker t
-	x-underline-at-descent-line t
-	centaur-tabs-cycle-scope 'tabs)
-  (centaur-tabs-headline-match)
-  (centaur-tabs-change-fonts "Iosevka Heavy" 120)
-  (centaur-tabs-mode t)
-  :bind
-  (:map evil-normal-state-map
-	("g t" . centaur-tabs-forward)
-	("g T" . centaur-tabs-backward))
-  :hook
-  (dired-mode . centaur-tabs-local-mode)
-  (helpful-mode . centaur-tabs-local-mode)
-  (help-mode . centaur-tabs-local-mode)
-  (org-agenda-mode . centaur-tabs-local-mode)
-  (calendar-mode . centaur-tabs-local-mode)
-  (term-mode . centaur-tabs-local-mode)
-  (vterm-mode . centaur-tabs-local-mode)
-  (fundamental-mode . centaur-tabs-local-mode))
-
 (use-package neotree
   :config
-  (setq neo-theme 'icons
-	neo-window-width 30)
+  (setq neo-window-width 30)
   (evil-leader/set-key "t" 'neotree-toggle)
   (evil-define-key 'normal neotree-mode-map (kbd "o")
     'neotree-open-file-in-system-application))
-
-(use-package powerline
-  :config
-  (setq powerline-default-separator 'slant
-	powerline-height 28)
-  (powerline-center-evil-theme))
