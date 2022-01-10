@@ -117,7 +117,6 @@
 		  (recentf-mode t)
 		  (setq recentf-auto-cleanup 60))))
 
-;; Automatically revert buffer when changed
 (use-package autorevert
   :ensure nil
   :config (global-auto-revert-mode t))
@@ -159,18 +158,6 @@
   :after ivy
   :diminish counsel-mode
   :hook (ivy-mode . counsel-mode))
-
-(use-package ivy-posframe
-  :diminish ivy-posframe-mode
-  :after ivy
-  :config
-  (ivy-posframe-mode t)
-  (setq ivy-posframe-height 10
-	ivy-posframe-min-height 10
-	ivy-posframe-width 80
-	ivy-posframe-min-width 80
-	ivy-posframe-display-functions-alist '((t . ivy-posframe-display-at-frame-center))
-	ivy-posframe-parameters '((left-fringe . 10) (right-fringe . 10))))
 
 (use-package undo-fu)
 
@@ -247,9 +234,6 @@
   :diminish olivetti-mode
   :custom (olivetti-body-width 80))
 
-(use-package pdf-tools
-  :init (pdf-loader-install))
-
 (use-package latex
   :ensure auctex
   :config
@@ -259,7 +243,8 @@
 	TeX-source-correlate-mode t
 	TeX-source-correlate-method 'synctex
 	TeX-view-program-selection '((output-pdf "PDF Tools"))
-	bibtex-dialect 'biblatex
+	bibte
+	x-dialect 'biblatex
 	TeX-source-correlate-start-server t)
   (add-hook 'TeX-after-compilation-finished-functions #'TeX-revert-document-buffer)
   (evil-leader/set-key-for-mode 'latex-mode "w" 'TeX-command-run-all)
@@ -292,11 +277,12 @@
   (evil-leader/set-key-for-mode 'python-mode
     "a" 'pyvenv-activate
     "r" 'pyvenv-restart-python
-    "x" 'python-shell-send-buffer
-    "f" 'flymake-show-diagnostics-buffer))
+    "x" 'python-shell-send-buffer))
 
 (use-package eglot
-  :hook (python-mode . eglot-ensure))
+  :hook
+  (python-mode . eglot-ensure)
+  (c++-mode . eglot-ensure))
 
 (use-package eldoc-box
   :diminish eldoc-box-hover
