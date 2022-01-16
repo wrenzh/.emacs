@@ -127,6 +127,7 @@
   :hook (after-init . global-subword-mode))
 
 (use-package gruvbox-theme
+  :if window-system
   :hook (after-init . (lambda () (load-theme 'gruvbox-dark-medium t))))
 
 (use-package diminish)
@@ -136,11 +137,10 @@
   :config (gcmh-mode t))
 
 ;; On macOS system the path is not inherited from shell
-(when (eq window-system 'ns)
-  (use-package exec-path-from-shell
-    :defer 1
-    :config
-    (exec-path-from-shell-initialize)))
+(use-package exec-path-from-shell
+  :if (eq system-type 'darwin)
+  :defer 1
+  :config (exec-path-from-shell-initialize))
 
 (use-package ivy
   :diminish ivy-mode
@@ -290,10 +290,6 @@
 
 (use-package org
   :hook (org-mode . olivetti-mode))
-
-(use-package vterm
-  :init (setq vterm-always-compile-module t)
-  :config (evil-leader/set-key "v" 'vterm))
 
 (use-package neotree
   :config
