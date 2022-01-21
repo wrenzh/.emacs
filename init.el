@@ -289,6 +289,12 @@
   :hook (eglot--managed-mode . (lambda () (eldoc-box-hover-at-point-mode t))))
 
 (use-package org
+  :config
+  (setq org-edit-src-content-indentation 0
+      org-src-tab-acts-natively t
+      org-src-preserve-indentation t)
+  (org-babel-do-load-languages
+   'org-babel-load-languages '((C . t)))
   :hook (org-mode . olivetti-mode))
 
 (use-package neotree
