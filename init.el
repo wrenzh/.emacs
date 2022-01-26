@@ -126,6 +126,10 @@
   :diminish subword-mode
   :hook (after-init . global-subword-mode))
 
+(use-package xclip
+  :if (not window-system)
+  :hook (after-init . xclip-mode))
+
 (use-package gruvbox-theme
   :if window-system
   :hook (after-init . (lambda () (load-theme 'gruvbox-dark-medium t))))
@@ -289,6 +293,12 @@
   :hook (eglot--managed-mode . (lambda () (eldoc-box-hover-at-point-mode t))))
 
 (use-package org
+  :config
+  (org-babel-do-load-languages
+   'org-babel-load-languages '((C . t)))
+  (setq org-src-tab-acts-natively t
+	org-src-preserve-indentation t
+	org-edit-src-content-indentation 0)
   :hook (org-mode . olivetti-mode))
 
 (use-package neotree
