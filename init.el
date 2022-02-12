@@ -3,8 +3,7 @@
 
 ;; Avoid garbage collection during startup
 (defvar file-name-handler-alist-original file-name-handler-alist)
-(setq gc-cons-threshold most-positive-fixnum
-      gc-cons-percentage 0.3
+(setq gc-cons-threshold #x40000000
       file-name-handler-alist nil
       site-run-file nil)
 (add-hook 'emacs-startup-hook
@@ -14,12 +13,14 @@
 
 ;; Load package.el and initialize use-package
 (require 'package)
+(setq package-native-compile t)
+(setq package-quickstart t)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
 (eval-and-compile
-  (setq use-package-always-ensure t
+  (setq use-package-always-ensure nil
 	use-package-expand-minimally t))
 
 ;; Find platform-independent config file location
@@ -32,7 +33,6 @@
 ;; Basic graphical and usage configurations
 ;; Note some graphical settings are in early-init.el
 (use-package emacs
-  :ensure nil
   :custom
   (user-full-name "Wren Zhang")
   (frame-title-format '("Emacs"))
@@ -55,7 +55,6 @@
     (setq dired-listing-switches "-alvFh --group-directories-first")))
 
 (use-package mouse
-  :ensure nil
   :custom
   (scroll-margin 1)
   (scroll-step 1)
@@ -64,81 +63,60 @@
   (mouse-wheel-progressive-speed nil))
 
 (use-package python
-  :ensure nil
   :custom
   (python-shell-interpreter "python3")
   (python-indent-offset 4)
   :hook (python-mode . electric-pair-mode))
 
 (use-package paren
-  :ensure nil
   :config
   (setq show-paren-delay 0)
   (show-paren-mode t))
 
 ;; Spell checker with hunspell and flyspell
 (use-package flyspell
-  :ensure nil
   :custom
   (ispell-program-name "hunspell")
   (ispell-personal-directory (concat config-directory "dictionary/"))
   :hook (text-mode . flyspell-mode))
 
 (use-package elec-pair
-  :ensure nil
   :hook (emacs-lisp-mode . electric-pair-mode))
 
 ;; Cleanup whitespaces when saving
 (use-package whitespace
-  :ensure nil
   :hook (before-save . whitespace-cleanup))
 
 ;; Display line numbers in prog-mode
 (use-package display-line-numbers
-  :ensure nil
   :hook (prog-mode . display-line-numbers-mode)
   :config
   (setq-default display-line-numbers-width 4)
   (setq display-line-numbers-type 'relative))
 
 (use-package recentf
-  :ensure nil
+  :defer 1
   :config
+  (setq recentf-auto-cleanup 'never)
+  (recentf-mode t)
+  (setq recentf-auto-cleaup 60)
   (run-at-time nil 120
-	       '(lambda () (let ((save-silently t)) (recentf-save-list))))
+	       #'(lambda () (let ((save-silently t)) (recentf-save-list))))
   (add-to-list 'recentf-exclude (concat config-directory "elpa/.*"))
   (add-to-list 'recentf-exclude "recentf")
   (add-to-list 'recentf-exclude ".*.synctex.gz")
   (add-to-list 'recentf-exclude "\\*.*\\*")
-  (add-to-list 'recentf-exclude ".*~")
-  :hook
-  (after-init . (lambda ()
-		  (setq recentf-auto-cleanup 'never)
-		  (recentf-mode t)
-		  (setq recentf-auto-cleanup 60))))
-
-(use-package autorevert
-  :ensure nil
-  :config (global-auto-revert-mode t))
-
-(use-package subword
-  :ensure nil
-  :diminish subword-mode
-  :hook (after-init . global-subword-mode))
+  (add-to-list 'recentf-exclude ".*~"))
 
 (use-package xclip
   :if (not window-system)
-  :hook (after-init . xclip-mode))
+  :config (xclip-mode t))
 
-(use-package gruvbox-theme
-  :if window-system
-  :hook (after-init . (lambda () (load-theme 'gruvbox-dark-medium t))))
+(use-package xt-mouse
+  :if (not window-system)
+  :config (xterm-mouse-mode t))
 
 (use-package diminish)
-
-(use-package gcmh
-  :diminish gcmh-mode
-  :config (gcmh-mode t))
 
 ;; On macOS system the path is not inherited from shell
 (use-package exec-path-from-shell
@@ -228,11 +206,12 @@
   (python-mode . company-mode))
 
 (use-package yasnippet
+  :defer 1
   :diminish yas-minor-mode
   :config (yas-global-mode t))
 
 (use-package yasnippet-snippets
-  :defer 0.5)
+  :defer 2)
 
 (use-package olivetti
   :diminish olivetti-mode
@@ -260,7 +239,7 @@
   (LaTeX-mode . save-place-mode))
 
 (use-package magit
-  :defer 0.5
+  :defer 1
   :config
   (evil-leader/set-key "m" 'magit-status))
 
@@ -307,3 +286,7 @@
   (evil-leader/set-key "t" 'neotree-toggle)
   (evil-define-key 'normal neotree-mode-map (kbd "o")
     'neotree-open-file-in-system-application))
+
+(use-package gcmh
+  :diminish gcmh-mode
+  :config (gcmh-mode t))
