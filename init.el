@@ -118,9 +118,6 @@
   (global-set-key (kbd "<mouse-4>") 'scroll-down-line)
   (global-set-key (kbd "<mouse-5>") 'scroll-up-line))
 
-(use-package hl-line
-  :hook (prog-mode . hl-line-mode))
-
 (use-package dired
   :hook (dired-mode . dired-hide-details-mode))
 
@@ -154,8 +151,13 @@
   (setq evil-undo-system 'undo-redo)
   (setq evil-respect-visual-line-mode t)
   (evil-set-leader '(normal motion) (kbd "SPC"))
-  (evil-define-key '(insert visual) 'global
-    (kbd "jk") 'evil-normal-state)
+  (define-key evil-normal-state-map [escape] 'keyboard-quit)
+  (define-key evil-visual-state-map [escape] 'keyboard-quit)
+  (define-key minibuffer-local-map [escape] 'minibuffer-keyboard-quit)
+  (define-key minibuffer-local-ns-map [escape] 'minibuffer-keyboard-quit)
+  (define-key minibuffer-local-completion-map [escape] 'minibuffer-keyboard-quit)
+  (define-key minibuffer-local-must-match-map [escape] 'minibuffer-keyboard-quit)
+  (define-key minibuffer-local-isearch-map [escape] 'minibuffer-keyboard-quit)
   (evil-define-key '(normal visual) 'global
     "j" 'evil-next-visual-line
     "k" 'evil-previous-visual-line)
@@ -174,14 +176,13 @@
     (kbd "<leader>k") 'evil-window-up
     (kbd "<leader>l") 'evil-window-right
     (kbd "<leader>u") 'list-packages
-    (kbd "<leader>Q") 'save-buffers-kill-terminal)
-  (evil-define-key 'normal 'emacs-lisp-mode-map
-    (kbd "<leader>x") 'eval-last-sexp))
+    (kbd "<leader>q") 'save-buffers-kill-terminal
+    (kbd "<leader>x") 'counsel-M-x))
 
 (use-package evil-collection
   :diminish evil-collection-unimpaired-mode
   :after evil
-  :config (evil-collection-init 'magit))
+  :config (evil-collection-init))
 
 (use-package evil-surround
   :after evil
@@ -211,9 +212,6 @@
 	TeX-save-query nil
 	TeX-source-correlate-mode t
 	TeX-source-correlate-method 'synctex
-	TeX-view-program-selection '((output-pdf "PDF Tools"))
-	bibte
-	x-dialect 'biblatex
 	TeX-source-correlate-start-server t)
   (evil-define-key 'normal 'latex-mode (kbd "<leader>w") 'TeX-command-run-all)
   :hook
@@ -250,7 +248,7 @@
 (use-package eldoc-box
   :after eglot
   :diminish eldoc-box-hover
-  :hook (eglot--managed-mode . (lambda () (eldoc-box-hover-at-point-mode t))))
+  :hook (eglot-managed-mode . (lambda () (eldoc-box-hover-at-point-mode t))))
 
 (use-package org
   :config
@@ -260,14 +258,6 @@
 	org-src-preserve-indentation t
 	org-edit-src-content-indentation 0)
   :hook (org-mode . olivetti-mode))
-
-(use-package neotree
-  :commands neotree-toggle
-  :config
-  (setq neo-window-width 30)
-  (evil-leader/set-key "t" 'neotree-toggle)
-  (evil-define-key 'normal neotree-mode-map (kbd "o")
-    'neotree-open-file-in-system-application))
 
 (use-package gcmh
   :diminish gcmh-mode
