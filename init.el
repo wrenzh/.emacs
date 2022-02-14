@@ -144,13 +144,15 @@
   :config (counsel-mode t))
 
 (use-package evil
-  :init
-  (setq evil-want-keybinding nil)
   :config
   (evil-mode t)
+  (setq evil-want-keybinding t)
   (setq evil-undo-system 'undo-redo)
   (setq evil-respect-visual-line-mode t)
-  (evil-set-leader '(normal motion) (kbd "SPC"))
+  (setq evil-normal-state-modes
+	(append evil-emacs-state-modes
+		evil-normal-state-modes
+		evil-motion-state-modes))
   (define-key evil-normal-state-map [escape] 'keyboard-quit)
   (define-key evil-visual-state-map [escape] 'keyboard-quit)
   (define-key minibuffer-local-map [escape] 'minibuffer-keyboard-quit)
@@ -160,33 +162,36 @@
   (define-key minibuffer-local-isearch-map [escape] 'minibuffer-keyboard-quit)
   (evil-define-key '(normal visual) 'global
     "j" 'evil-next-visual-line
-    "k" 'evil-previous-visual-line)
-  (evil-define-key '(normal motion) 'global
-    (kbd "<leader>0") 'delete-window
-    (kbd "<leader>1") 'delete-other-windows
-    (kbd "<leader>b") 'counsel-switch-buffer
-    (kbd "<leader>d") 'dired
-    (kbd "<leader>e") 'counsel-find-file
-    (kbd "<leader>f") 'counsel-rg
-    (kbd "<leader>C") 'kill-buffer-and-window
-    (kbd "<leader>c") 'kill-this-buffer
-    (kbd "<leader>w") 'save-buffer
-    (kbd "<leader>h") 'evil-window-left
-    (kbd "<leader>j") 'evil-window-down
-    (kbd "<leader>k") 'evil-window-up
-    (kbd "<leader>l") 'evil-window-right
-    (kbd "<leader>u") 'list-packages
-    (kbd "<leader>q") 'save-buffers-kill-terminal
-    (kbd "<leader>x") 'counsel-M-x))
-
-(use-package evil-collection
-  :diminish evil-collection-unimpaired-mode
-  :after evil
-  :config (evil-collection-init))
+    "k" 'evil-previous-visual-line))
 
 (use-package evil-surround
   :after evil
   :config (global-evil-surround-mode t))
+
+(use-package general
+  :after evil
+  :config
+  (general-evil-setup)
+  (general-nmap
+   :prefix "SPC"
+   "0" 'delete-window
+   "1" 'delete-other-windows
+   "b" 'counsel-switch-buffer
+   "C" 'kill-buffer-and-window
+   "c" 'kill-this-buffer
+   "d" 'counsel-dired
+   "e" 'counsel-find-file
+   "f" 'counsel-rg
+   "h" 'evil-window-left
+   "j" 'evil-window-down
+   "k" 'evil-window-up
+   "l" 'evil-window-right
+   "m" 'magit-status
+   "q" 'save-buffers-kill-terminal
+   "Q" 'save-buffers-kill-emacs
+   "u" 'package-list-packages
+   "w" 'save-buffer
+   "x" 'counsel-M-x))
 
 (use-package company
   :diminish company-mode
@@ -223,9 +228,7 @@
   (LaTeX-mode . turn-on-reftex))
 
 (use-package magit
-  :defer 1
-  :config
-  (evil-define-key 'normal 'global (kbd "<leader>m") 'magit-status))
+  :defer 1)
 
 (use-package spice-mode
   :commands spice-mode
