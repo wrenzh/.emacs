@@ -73,7 +73,7 @@
 
 ;; Spell checker with hunspell and flyspell
 (use-package flyspell
-  :defer 1
+  :defer 0.2
   :custom
   (ispell-program-name "hunspell")
   (ispell-personal-directory (concat config-directory "dictionary/"))
@@ -98,7 +98,7 @@
   :config
   (setq recentf-auto-cleanup 'never)
   (recentf-mode t)
-  (setq recentf-auto-cleaup 60)
+  (setq recentf-auto-cleanup 60)
   (run-at-time nil 120
 	       #'(lambda () (let ((save-silently t)) (recentf-save-list))))
   (add-to-list 'recentf-exclude (concat config-directory "elpa/.*"))
@@ -121,22 +121,20 @@
 (use-package dired
   :hook (dired-mode . dired-hide-details-mode))
 
+(use-package gcmh
+  :diminish gcmh-mode
+  :config (gcmh-mode t))
+
 (use-package diminish)
 
-;; On macOS system the path is not inherited from shell
-(use-package exec-path-from-shell
-  :if (eq system-type 'darwin)
-  :defer 1
-  :config (exec-path-from-shell-initialize))
-
 (use-package ivy
-  :defer 0.5
+  :defer 0.2
   :diminish ivy-mode
   :config
   (ivy-mode t)
   (setq ivy-use-virtual-buffers t
 	ivy-use-selectable-prompt t)
-  :bind ("C-s" . 'swiper))
+  :bind ("C-s" . 'counsel-grep-or-swiper))
 
 (use-package counsel
   :after ivy
@@ -144,10 +142,10 @@
   :config (counsel-mode t))
 
 (use-package evil
+  :init
+  (setq evil-want-keybinding nil)
   :config
-  (evil-mode t)
-  (setq evil-want-keybinding t)
-  (setq evil-undo-system 'undo-redo)
+  (evil-set-undo-system 'undo-redo)
   (setq evil-respect-visual-line-mode t)
   (setq evil-normal-state-modes
 	(append evil-emacs-state-modes
@@ -160,23 +158,36 @@
   (define-key minibuffer-local-completion-map [escape] 'minibuffer-keyboard-quit)
   (define-key minibuffer-local-must-match-map [escape] 'minibuffer-keyboard-quit)
   (define-key minibuffer-local-isearch-map [escape] 'minibuffer-keyboard-quit)
-  (evil-define-key '(normal visual) 'global
-    "j" 'evil-next-visual-line
-    "k" 'evil-previous-visual-line))
+  :hook (after-init . evil-mode))
 
 (use-package evil-surround
   :after evil
-  :config (global-evil-surround-mode t))
+  :hook (prog-mode . evil-surround-mode))
+
+(use-package evil-collection
+  :after evil
+  :diminish evil-collection-unimpaired-mode
+  :hook (after-init . evil-collection-init))
 
 (use-package general
-  :after evil
+  :init
+  (setq general-override-states '(insert
+				  emacs
+				  hybrid
+				  normal
+				  visual
+				  motion
+				  operator
+				  replace))
   :config
   (general-evil-setup)
-  (general-nmap
+  (general-define-key
+   :states '(normal visual motion)
    :prefix "SPC"
+   :keymaps 'override
    "0" 'delete-window
    "1" 'delete-other-windows
-   "b" 'counsel-switch-buffer
+   "b" 'ivy-switch-buffer
    "C" 'kill-buffer-and-window
    "c" 'kill-this-buffer
    "d" 'counsel-dired
@@ -218,7 +229,6 @@
 	TeX-source-correlate-mode t
 	TeX-source-correlate-method 'synctex
 	TeX-source-correlate-start-server t)
-  (evil-define-key 'normal 'latex-mode (kbd "<leader>w") 'TeX-command-run-all)
   :hook
   (LaTeX-mode . electric-pair-mode)
   (LaTex-mode . company-mode)
@@ -228,19 +238,12 @@
   (LaTeX-mode . turn-on-reftex))
 
 (use-package magit
-  :defer 1)
+  :commands magit-status)
 
 (use-package spice-mode
   :commands spice-mode
   :hook (spice-mode . display-line-numbers-mode)
   :mode ("\\.cir\\'" . spice-mode))
-
-(use-package pyvenv
-  :config
-  (evil-define-key 'normal 'python-mode
-    (kbd "<leader>a") 'pyvenv-activate
-    (kbd "<leader>r") 'pyvenv-restart-python
-    (kbd "<leader>x") 'python-shell-send-buffer))
 
 (use-package eglot
   :commands eglot
@@ -262,6 +265,6 @@
 	org-edit-src-content-indentation 0)
   :hook (org-mode . olivetti-mode))
 
-(use-package gcmh
-  :diminish gcmh-mode
-  :config (gcmh-mode t))
+(use-package feebleline
+  :ensure t
+  :config (feebleline-mode 1))

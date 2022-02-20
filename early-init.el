@@ -3,7 +3,7 @@
 
 ;; Visual settings
 (set-face-attribute 'default nil
-		    :family "Anonymous Pro"
+		    :family "SF Mono"
 		    :height 120)
 (add-to-list 'default-frame-alist (cons 'width 120))
 (add-to-list 'default-frame-alist (cons 'height 60))
