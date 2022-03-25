@@ -48,6 +48,7 @@
   (find-file-visit-truename t)
   (inhibit-startup-screen t)
   (fill-column 120)
+  (column-number-mode)
   :config
   (blink-cursor-mode 0)
   (defalias 'yes-or-no-p 'y-or-n-p))
@@ -141,6 +142,8 @@
   :diminish counsel-mode
   :config (counsel-mode t))
 
+(use-package projectile)
+
 (use-package evil
   :init
   (setq evil-want-keybinding nil)
@@ -153,12 +156,16 @@
 		evil-motion-state-modes))
   (define-key evil-normal-state-map [escape] 'keyboard-quit)
   (define-key evil-visual-state-map [escape] 'keyboard-quit)
+  (define-key evil-normal-state-map (kbd "j") 'evil-next-visual-line)
+  (define-key evil-normal-state-map (kbd "k") 'evil-previous-visual-line)
+  (define-key evil-motion-state-map (kbd "j") 'evil-next-visual-line)
+  (define-key evil-motion-state-map (kbd "k") 'evil-previous-visual-line)
   (define-key minibuffer-local-map [escape] 'minibuffer-keyboard-quit)
   (define-key minibuffer-local-ns-map [escape] 'minibuffer-keyboard-quit)
   (define-key minibuffer-local-completion-map [escape] 'minibuffer-keyboard-quit)
   (define-key minibuffer-local-must-match-map [escape] 'minibuffer-keyboard-quit)
   (define-key minibuffer-local-isearch-map [escape] 'minibuffer-keyboard-quit)
-  :hook (after-init . evil-mode))
+  (evil-mode t))
 
 (use-package evil-surround
   :after evil
@@ -166,10 +173,11 @@
 
 (use-package evil-collection
   :after evil
-  :diminish evil-collection-unimpaired-mode
+  :diminish
   :hook (after-init . evil-collection-init))
 
 (use-package general
+  :after evil-collection
   :init
   (setq general-override-states '(insert
 				  emacs
@@ -245,11 +253,15 @@
   :hook (spice-mode . display-line-numbers-mode)
   :mode ("\\.cir\\'" . spice-mode))
 
+(use-package lua-mode
+  :commands lua-mode)
+
 (use-package eglot
   :commands eglot
   :hook
   (python-mode . eglot-ensure)
-  (c++-mode . eglot-ensure))
+  (c++-mode . eglot-ensure)
+  (dart-mode . eglot-ensure))
 
 (use-package eldoc-box
   :after eglot
@@ -259,12 +271,29 @@
 (use-package org
   :config
   (org-babel-do-load-languages
-   'org-babel-load-languages '((C . t)))
+   'org-babel-load-languages '((C . t)
+			       (python . t)))
   (setq org-src-tab-acts-natively t
 	org-src-preserve-indentation t
 	org-edit-src-content-indentation 0)
   :hook (org-mode . olivetti-mode))
 
-(use-package feebleline
-  :ensure t
-  :config (feebleline-mode 1))
+(use-package telephone-line
+  :config
+  (setq telephone-line-primary-left-separator 'telephone-line-nil
+	telephone-line-secondary-left-separator 'telephone-line-nil
+	telephone-line-primary-right-separator 'telephone-line-nil
+	telephone-line-secondary-right-separator 'telephone-line-nil)
+  (setq telephone-line-lhs
+	'((evil . (telephone-line-evil-tag-segment))
+	  (accent . (telephone-line-vc-segment
+		     telephone-line-erc-modified-channels-segment
+		     telephone-line-process-segment))
+	  (nil . (telephone-line-buffer-modified-segment
+		  telephone-line-projectile-buffer-segment))))
+  (setq telephone-line-rhs
+	'((nil . (telephone-line-flycheck-segment
+		  telephone-line-misc-info-segment))
+	  (accent . (telephone-line-major-mode-segment))
+	  (evil . (telephone-line-airline-position-segment))))
+  (telephone-line-mode t))
