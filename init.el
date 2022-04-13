@@ -48,7 +48,6 @@
   (find-file-visit-truename t)
   (inhibit-startup-screen t)
   (fill-column 120)
-  (column-number-mode)
   :config
   (blink-cursor-mode 0)
   (defalias 'yes-or-no-p 'y-or-n-p))
@@ -126,7 +125,15 @@
   :diminish gcmh-mode
   :config (gcmh-mode t))
 
+(when (memq window-system '(mac ns x))
+  (use-package exec-path-from-shell
+    :config
+    (setq exec-path-from-shell-arguments nil)
+    (exec-path-from-shell-initialize)))
+
 (use-package diminish)
+
+(use-package vterm)
 
 (use-package ivy
   :defer 0.2
@@ -173,7 +180,7 @@
 
 (use-package evil-collection
   :after evil
-  :diminish
+  :diminish evil-collection-unimpaired-mode
   :hook (after-init . evil-collection-init))
 
 (use-package general
@@ -209,6 +216,7 @@
    "q" 'save-buffers-kill-terminal
    "Q" 'save-buffers-kill-emacs
    "u" 'package-list-packages
+   "v" 'vterm
    "w" 'save-buffer
    "x" 'counsel-M-x))
 
@@ -256,12 +264,16 @@
 (use-package lua-mode
   :commands lua-mode)
 
+(use-package rust-mode
+  :config
+  (setq rust-format-on-save t))
+
 (use-package eglot
   :commands eglot
   :hook
   (python-mode . eglot-ensure)
   (c++-mode . eglot-ensure)
-  (dart-mode . eglot-ensure))
+  (rust-mode . eglot-ensure))
 
 (use-package eldoc-box
   :after eglot
@@ -278,22 +290,14 @@
 	org-edit-src-content-indentation 0)
   :hook (org-mode . olivetti-mode))
 
-(use-package telephone-line
+(use-package moody
   :config
-  (setq telephone-line-primary-left-separator 'telephone-line-nil
-	telephone-line-secondary-left-separator 'telephone-line-nil
-	telephone-line-primary-right-separator 'telephone-line-nil
-	telephone-line-secondary-right-separator 'telephone-line-nil)
-  (setq telephone-line-lhs
-	'((evil . (telephone-line-evil-tag-segment))
-	  (accent . (telephone-line-vc-segment
-		     telephone-line-erc-modified-channels-segment
-		     telephone-line-process-segment))
-	  (nil . (telephone-line-buffer-modified-segment
-		  telephone-line-projectile-buffer-segment))))
-  (setq telephone-line-rhs
-	'((nil . (telephone-line-flycheck-segment
-		  telephone-line-misc-info-segment))
-	  (accent . (telephone-line-major-mode-segment))
-	  (evil . (telephone-line-airline-position-segment))))
-  (telephone-line-mode t))
+  (column-number-mode t)
+  (setq x-underline-at-descent-line t)
+  (moody-replace-mode-line-buffer-identification)
+  (moody-replace-vc-mode)
+  (moody-replace-eldoc-minibuffer-message-function))
+
+(use-package gruvbox
+  :config
+  (load-theme 'gruvbox-dark-soft t))
