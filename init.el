@@ -298,6 +298,6 @@
   (moody-replace-vc-mode)
   (moody-replace-eldoc-minibuffer-message-function))
 
-(use-package gruvbox
+(use-package gruvbox-theme
   :config
   (load-theme 'gruvbox-dark-soft t))

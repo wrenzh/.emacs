@@ -3,8 +3,8 @@
 
 ;; Visual settings
 (set-face-attribute 'default nil
-		    :family "SF Mono"
-		    :height 120)
+		    :family "Jetbrains Mono"
+		    :height 110)
 (add-to-list 'default-frame-alist (cons 'width 120))
 (add-to-list 'default-frame-alist (cons 'height 60))
 (scroll-bar-mode 0)
