@@ -13,14 +13,11 @@
 
 ;; Load package.el and initialize use-package
 (require 'package)
-(setq package-native-compile t)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/"))
 (unless (package-installed-p 'use-package)
   (package-refresh-contents)
   (package-install 'use-package))
-(eval-and-compile
-  (setq use-package-always-ensure nil
-	use-package-expand-minimally t))
+(setq use-package-always-ensure t)
 
 ;; Find platform-independent config file location
 (defvar config-directory (file-name-directory user-init-file))
@@ -48,19 +45,13 @@
 	inhibit-startup-screen t
 	fill-column 120)
   (blink-cursor-mode 0)
-  (defalias 'yes-or-no-p 'y-or-n-p))
-
-(use-package mouse
-  :config
+  (xterm-mouse-mode t)
   (setq scroll-margin 1
 	scroll-step 1
 	scroll-conservatively 10000
 	scroll-preserve-screen-position t
-	mouse-wheel-progressive-speed nil))
-
-(use-package python
-  :config
-  (setq python-shell-interpreter "python3"))
+	mouse-wheel-progressive-speed nil)
+  (defalias 'yes-or-no-p 'y-or-n-p))
 
 (use-package paren
   :config
@@ -228,11 +219,6 @@
   (define-key company-active-map (kbd "M-h") #'company-quickhelp-manual-begin)
   :hook (prog-mode . company-quickhelp-mode))
 
-(use-package olivetti
-  :delight
-  :delight visual-line-mode
-  :custom (olivetti-body-width 80))
-
 (use-package latex
   :commands LaTeX-mode
   :hook
@@ -263,7 +249,7 @@
   (python-mode . tree-sitter-hl-mode)
   (c-mode . tree-sitter-hl-mode))
 
-(use-package tree-sitter-lang
+(use-package tree-sitter-langs
   :defer t)
 
 (use-package org
@@ -275,14 +261,6 @@
   :hook
   (org-mode . olivetti-mode)
   (org-mode . save-place-mode))
-
-(use-package moody
-  :config
-  (setq x-underline-at-descent-line t
-	moody-mode-line-height 24)
-  (moody-replace-mode-line-buffer-identification)
-  (moody-replace-vc-mode)
-  (moody-replace-eldoc-minibuffer-message-function))
 
 (use-package color-theme-sanityinc-tomorrow
   :config
