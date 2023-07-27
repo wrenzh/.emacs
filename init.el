@@ -221,14 +221,6 @@
   (define-key company-active-map (kbd "M-h") #'company-quickhelp-manual-begin)
   :hook (prog-mode . company-quickhelp-mode))
 
-(use-package latex
-  :commands LaTeX-mode
-  :hook
-  (LaTeX-mode . electric-pair-mode)
-  (LaTeX-mode . olivetti-mode)
-  (LaTeX-mode . LaTeX-math-mode)
-  (LaTeX-mode . save-place-mode))
-
 (use-package magit
   :commands magit-status)
 
@@ -283,3 +275,5 @@
 (use-package color-theme-sanityinc-tomorrow
   :config
   (load-theme 'sanityinc-tomorrow-night t))
+
+(use-package cmake-mode)
