@@ -89,7 +89,9 @@
   (setq recentf-auto-cleanup 120)
   :config
   (recentf-mode t)
-  (run-at-time nil 120 'recentf-save-list)
+  (defun recentf-save-list-silent ()
+    (let ((save-silently t)) (recentf-save-list)))
+  (run-at-time nil 120 'recentf-save-list-silent)
   (add-to-list 'recentf-exclude (concat config-directory "elpa/.*"))
   (add-to-list 'recentf-exclude "recentf")
   (add-to-list 'recentf-exclude ".*.synctex.gz")
@@ -235,19 +237,35 @@
   :config
   (setq rust-format-on-save t))
 
+(use-package cmake-mode)
+
+(use-package web-mode
+  :config
+  (setq web-mode-markup-indent-offset 2
+	web-mode-css-indent-offset 2
+	web-mode-code-indent-offset 2
+	web-mode-enable-auto-pairing nil
+	web-mode-enable-css-colorization t))
+
+(use-package typescript-mode)
+
 (use-package eglot
   :commands eglot
   :hook
   (rust-mode . eglot-ensure)
   (python-mode . eglot-ensure)
-  (c-mode . eglot-ensure))
+  (c-mode . eglot-ensure)
+  (js-mode . eglot-ensure)
+  (typescript-mode . eglot-ensure))
 
 (use-package tree-sitter
   :commands tree-sitter-hl-mode
   :hook
   (rust-mode . tree-sitter-hl-mode)
   (python-mode . tree-sitter-hl-mode)
-  (c-mode . tree-sitter-hl-mode))
+  (c-mode . tree-sitter-hl-mode)
+  (js-mode . tree-sitter-hl-mode)
+  (typescript-mode . tree-sitter-hl-mode))
 
 (use-package tree-sitter-langs
   :defer t)
