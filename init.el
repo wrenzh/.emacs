@@ -118,6 +118,11 @@
 
 (use-package vterm)
 
+(use-package which-key
+  :delight
+  :config
+  (which-key-mode t))
+
 (use-package ivy
   :delight
   :config
@@ -204,7 +209,7 @@
   :delight
   :commands company-mode
   :config
-  (setq company-idle-delay 0.1
+  (setq company-idle-delay 0.02
 	company-minimum-prefix-length 2
 	company-require-match nil
 	company-tooltip-flip-when-above t
@@ -277,3 +282,11 @@
   (load-theme 'sanityinc-tomorrow-night t))
 
 (use-package cmake-mode)
+
+(use-package blacken
+  :hook
+  (python-mode . blacken-mode))
+
+(use-package poetry
+  :hook
+  (python-mode . poetry-tracking-mode))
