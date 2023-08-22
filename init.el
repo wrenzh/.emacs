@@ -90,7 +90,7 @@
   :config
   (recentf-mode t)
   (defun recentf-save-list-silent ()
-    (let ((save-silently t)) (recentf-save-list)))
+    (let ((inhibit-message t)) (recentf-save-list)))
   (run-at-time nil 120 'recentf-save-list-silent)
   (add-to-list 'recentf-exclude (concat config-directory "elpa/.*"))
   (add-to-list 'recentf-exclude "recentf")
